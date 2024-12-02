@@ -147,7 +147,7 @@ namespace ProiectDAW_V2.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction("New", "Profiles");
                     }
                 }
 

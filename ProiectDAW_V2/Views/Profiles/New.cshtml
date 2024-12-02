@@ -1,0 +1,39 @@
+@model ProiectDAW_V2.Models.Profile
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="col-md-4">
+        <h2 class="text-center mt-5">Create your profile</h2>
+        <form method="post" asp-action="New" asp-controller="Profiles">
+            <div class="form-floating mb-3">
+                <input asp-for="FirstName" class="form-control" autocomplete="First name" aria-required="true" placeholder="First name"/>
+                <label asp-for="FirstName">First name</label>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="LastName" class="form-control" autocomplete="Last name" aria-required="true" placeholder="Last name"/>
+                <label asp-for="LastName">Last name</label>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Description" class="form-control" autocomplete="Description" aria-required="true" placeholder="Description"/>
+                <label asp-for="Description">Description</label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Visibility">Visibility</label>
+
+                <select asp-for="Visibility" class="form-control">
+                    @foreach (var i in Enum.GetValues(typeof(Profile.VisibilityType)))
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Create profile</button>
+        </form>
+    </div>
+</div>
