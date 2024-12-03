@@ -3,7 +3,8 @@
 <div class="d-flex flex-column align-items-center justify-content-center">
     <div class="col-md-4">
         <h2 class="text-center mt-5">Create your profile</h2>
-        <form method="post" asp-action="New" asp-controller="Profiles">
+        <hr/>
+        <form enctype="multipart/form-data" method="post" asp-action="New" asp-controller="Profiles">
             <div class="form-floating mb-3">
                 <input asp-for="FirstName" class="form-control" autocomplete="First name" aria-required="true" placeholder="First name"/>
                 <label asp-for="FirstName">First name</label>
@@ -20,6 +21,11 @@
                 <input asp-for="Description" class="form-control" autocomplete="Description" aria-required="true" placeholder="Description"/>
                 <label asp-for="Description">Description</label>
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="ProfilePicture">Load profile picture (optional)</label>
+                <input asp-for="ProfilePicture" class="form-control" type="file"/>
             </div>
 
             <div class="form-group mb-3">

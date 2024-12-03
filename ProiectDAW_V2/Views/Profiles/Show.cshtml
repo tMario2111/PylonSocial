@@ -1,6 +1,13 @@
 ﻿@model ProiectDAW_V2.Models.Profile
 
-<p>@Model.FirstName</p>
-<p>@Model.LastName</p>
-<p>@Model.Description</p>
-<p>@Model.Visibility</p>
+<div class="d-flex flex-column align-items-center gap-3 mt-5">
+    <div class="d-flex flex-row gap-3">
+        <img src="@(string.IsNullOrEmpty(Model.ProfilePicture) ? "https://vos.line-scdn.net/lsp-image-jp/front/market_jp/pc/img-my-profile-default@2x.png" : Model.ProfilePicture)"
+             alt="profile picture"
+             style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;"/>
+        <div class="d-flex flex-column ms-2">
+            <h2>@Model.FirstName @Model.LastName</h2>
+            <p>@Model.Description</p>
+        </div>
+    </div>
+</div>
