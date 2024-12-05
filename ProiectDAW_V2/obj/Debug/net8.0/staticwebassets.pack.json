@@ -245,6 +245,26 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\dq8zgb6uaz7gfa75tdmnofbnt8k2suzd.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\dq8zgb6uaz7gfa75tdmnofbnt8k2suzd.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\fvwi00xtt7gywdys6hr0foj8gljfr3po.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\fvwi00xtt7gywdys6hr0foj8gljfr3po.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\h7rl2zsifoweufzn2imnfwitoe69951y.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\h7rl2zsifoweufzn2imnfwitoe69951y.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\jlst0jtc0o3rftnlc7oggl3r1gr912kz.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\jlst0jtc0o3rftnlc7oggl3r1gr912kz.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\q20mkqvcm5t141btzpq0njrrjoemaioh.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\q20mkqvcm5t141btzpq0njrrjoemaioh.jpg"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ProiectDAW_V2.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
