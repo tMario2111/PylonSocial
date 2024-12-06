@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\ProiectDAW_V2.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\assets\\fallback_profile_picture.png",
+      "PackagePath": "staticwebassets\\assets\\fallback_profile_picture.png"
+    },
+    {
       "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

@@ -1,7 +1,7 @@
-﻿<div class="d-flex flex-column align-items-center gap-3 mt-5">
+﻿<div class="d-flex flex-column align-items-center gap-4 mt-5">
     <div class="d-flex flex-row gap-3">
         @* TODO: Poate ar trebui stocata local imaginea de fallback *@
-        <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "https://vos.line-scdn.net/lsp-image-jp/front/market_jp/pc/img-my-profile-default@2x.png" : ViewBag.Profile.ProfilePicture)"
+        <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)"
              alt="profile picture"
              style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;"/>
         <div class="d-flex flex-column ms-2">
@@ -18,4 +18,8 @@
             </a>
         }
     </div>
+    @if (!ViewBag.CanEdit && ViewBag.Profile.Visibility == Profile.VisibilityType.Private)
+    {
+        <h5>This is a private profile. Follow the user to be able to see their profile.</h5>
+    }
 </div>

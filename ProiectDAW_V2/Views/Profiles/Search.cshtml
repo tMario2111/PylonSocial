@@ -4,9 +4,8 @@
 {
     <a asp-controller="Profiles" asp-action="Show" asp-route-id="@profile.UserId" style="text-decoration: none; color: inherit;">
         <div class="mb-3 d-flex flex-row align-items-center" style="background-color: lightgrey; border-radius: 15px;">
-            @* TODO: Poate ar trebui stocata local imaginea de fallback *@
             <img
-                src="@(string.IsNullOrEmpty(profile.ProfilePicture) ? "https://vos.line-scdn.net/lsp-image-jp/front/market_jp/pc/img-my-profile-default@2x.png" : profile.ProfilePicture)"
+                src="@(string.IsNullOrEmpty(profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : profile.ProfilePicture)"
                 alt="profile picture"
                 @* # FRONTEND ENGINEER *@
                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; padding: 5px 5px 5px 5px;"/>

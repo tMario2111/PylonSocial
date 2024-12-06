@@ -100,15 +100,6 @@ public class ProfilesController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        // TODO: Sterge asta
-        foreach (var state in ModelState)
-        {
-            foreach (var error in state.Value.Errors)
-            {
-                Console.WriteLine($"Key: {state.Key}, Error: {error.ErrorMessage}");
-            }
-        }
-
         return View(profile);
     }
 
