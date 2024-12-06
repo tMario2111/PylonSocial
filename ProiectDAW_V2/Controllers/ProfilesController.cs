@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProiectDAW_V2.Data;
 using ProiectDAW_V2.Models;
@@ -100,21 +101,36 @@ public class ProfilesController : Controller
             return RedirectToAction("Index", "Home");
         }
 
+        foreach (var state in ModelState)
+        {
+            foreach (var error in state.Value.Errors)
+            {
+                Console.WriteLine($"Key: {state.Key}, Error: {error.ErrorMessage}");
+            }
+        }
+
         return View(profile);
     }
 
     public IActionResult Show(string? id = null)
     {
         var userId = _userManager.GetUserId(User)!;
-        var profile = (id == null) ? db.Profiles.FirstOrDefault(x => x.UserId == userId) :
-                db.Profiles.FirstOrDefault(x => x.UserId == id);
-        
+        var profile = (id == null)
+            ? db.Profiles.Include(p => p.User)
+                .Include(p => p.User.Followers)
+                .Include(p => p.User.Following)
+                .FirstOrDefault(x => x.UserId == userId)
+            : db.Profiles.Include(p => p.User)
+                .Include(p => p.User.Followers)
+                .Include(p => p.User.Following)
+                .FirstOrDefault(x => x.UserId == id);
+
         ViewBag.Profile = profile!;
         ViewBag.CanEdit = id == null || id == userId;
-        
+
         return View(profile);
     }
-    
+
     public IActionResult Edit()
     {
         var userId = _userManager.GetUserId(User)!;
@@ -228,7 +244,7 @@ public class ProfilesController : Controller
         {
             search = Convert.ToString(HttpContext.Request.Query["search"]).Trim();
 
-            var profiles = 
+            var profiles =
                 db.Profiles.Where(at => (at.FirstName + " " + at.LastName).Contains(search)).ToList();
             ViewBag.Profiles = profiles;
         }

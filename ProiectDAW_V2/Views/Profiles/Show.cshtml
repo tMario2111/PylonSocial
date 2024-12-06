@@ -7,6 +7,10 @@
         <div class="d-flex flex-column ms-2">
             <h2>@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h2>
             <p>@ViewBag.Profile.Description</p>
+            <div class="d-flex flex-row gap-4">
+                <p class="fw-bold">@ViewBag.Profile.User.Followers.Count followers</p>
+                <p class="fw-bold">@ViewBag.Profile.User.Following.Count following</p>
+            </div>
         </div>
         @if (ViewBag.CanEdit)
         {

@@ -265,8 +265,16 @@
       "PackagePath": "staticwebassets\\profile_pictures\\jlst0jtc0o3rftnlc7oggl3r1gr912kz.jpg"
     },
     {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\mfqs5fkln4w9p4qi2agcig5vmrsgnkwc.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\mfqs5fkln4w9p4qi2agcig5vmrsgnkwc.jpg"
+    },
+    {
       "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\q20mkqvcm5t141btzpq0njrrjoemaioh.jpg",
       "PackagePath": "staticwebassets\\profile_pictures\\q20mkqvcm5t141btzpq0njrrjoemaioh.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\y6ogiq3vzw4onqts5oh7dxd21liqhtb9.jpg",
+      "PackagePath": "staticwebassets\\profile_pictures\\y6ogiq3vzw4onqts5oh7dxd21liqhtb9.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.ProiectDAW_V2.Microsoft.AspNetCore.StaticWebAssets.props",

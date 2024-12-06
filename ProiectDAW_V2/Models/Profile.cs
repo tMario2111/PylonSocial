@@ -7,9 +7,10 @@ namespace ProiectDAW_V2.Models;
 public class Profile
 {
     [Key] public int Id { get; set; }
-
     
     public string? UserId { get; set; }
+    
+    public virtual ApplicationUser? User { get; set; }
 
     [MinLength(2, ErrorMessage = "First name too short")]
     [MaxLength(50, ErrorMessage = "First name too long")]
