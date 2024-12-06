@@ -21,6 +21,27 @@
                 </svg>
             </a>
         }
+        else
+        {
+            if (ViewBag.Followed)
+            {
+                <form asp-controller="Followers" asp-action="Delete" method="post">
+                    <input type="hidden" name="sender" value="@ViewBag.UserId"/>
+                    <input type="hidden" name="receiver" value="@ViewBag.Profile.UserId"/>
+                    <button type="submit" class="btn btn-sm btn-secondary h-25 mt-1">Unfollow</button>
+                    @Html.AntiForgeryToken()
+                </form>
+            }
+            else
+            {
+                <form asp-controller="Followers" asp-action="New" method="post">
+                    <input type="hidden" name="sender" value="@ViewBag.UserId"/>
+                    <input type="hidden" name="receiver" value="@ViewBag.Profile.UserId"/>
+                    <button type="submit" class="btn btn-sm btn-secondary h-25 mt-1">Follow</button>
+                    @Html.AntiForgeryToken()
+                </form>
+            }
+        }
     </div>
     @if (!ViewBag.CanEdit && ViewBag.Profile.Visibility == Profile.VisibilityType.Private)
     {

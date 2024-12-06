@@ -6,4 +6,7 @@ public class ApplicationUser : IdentityUser
 {
     public virtual ICollection<Follower>? Following { get; set; }
     public virtual ICollection<Follower>? Followers { get; set; }
+    
+    public virtual ICollection<FollowRequest>? RequestsSent { get; set; }
+    public virtual ICollection<FollowRequest>? RequestsReceived { get; set; }
 }

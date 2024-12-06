@@ -125,8 +125,17 @@ public class ProfilesController : Controller
                 .Include(p => p.User.Following)
                 .FirstOrDefault(x => x.UserId == id);
 
+        var isLoggedInUser = id == null || id == userId;
+
         ViewBag.Profile = profile!;
-        ViewBag.CanEdit = id == null || id == userId;
+        ViewBag.CanEdit = isLoggedInUser;
+
+        if (!isLoggedInUser)
+        {
+            var follower = db.Followers.FirstOrDefault(f => f.FollowerId == userId && f.FollowedId == id);
+            ViewBag.Followed = follower != null;
+        }
+        ViewBag.UserId = userId;
 
         return View(profile);
     }
