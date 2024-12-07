@@ -1,5 +1,6 @@
-﻿<h3 class="mb-5">Results for "@ViewBag.Search"</h3>
+﻿<h3 class="mb-5">@ViewBag.Profiles.Count results for "@ViewBag.Search"</h3>
 
+@* TODO: Nebunia asta ar trebui sa fie paginata *@
 @foreach (var profile in ViewBag.Profiles)
 {
     <a asp-controller="Profiles" asp-action="Show" asp-route-id="@profile.UserId" style="text-decoration: none; color: inherit;">

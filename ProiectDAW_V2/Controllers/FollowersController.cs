@@ -21,13 +21,25 @@ public class FollowersController : Controller
             return BadRequest("User is already followed");
         }
 
-        Console.WriteLine("Got here!");
+        var receiverProfile = db.Profiles.First(p => p.UserId == receiver);
 
-        var follower = new Follower();
-        follower.FollowerId = sender;
-        follower.FollowedId = receiver;
-        db.Followers.Add(follower);
-        db.SaveChanges();
+        if (receiverProfile.Visibility == Profile.VisibilityType.Private)
+        {
+            var followRequest = new FollowRequest();
+            followRequest.SenderId = sender;
+            followRequest.ReceiverId = receiver;
+            followRequest.Date = DateTime.Now;
+            db.FollowRequests.Add(followRequest);
+            db.SaveChanges();
+        }
+        else
+        {
+            var follower = new Follower();
+            follower.FollowerId = sender;
+            follower.FollowedId = receiver;
+            db.Followers.Add(follower);
+            db.SaveChanges();
+        }
 
         var referer = Request.Headers["Referer"].ToString();
         if (!string.IsNullOrEmpty(referer))
@@ -56,5 +68,28 @@ public class FollowersController : Controller
         }
 
         return Ok("Unfollowed successfully");
+    }
+
+    // TODO: Nu stiu daca actiunea asta ar trebui sa fie in FollowRequestsController
+    // Dupa mine nu prea are relevanta
+    [HttpPost]
+    public IActionResult DeleteFollowRequest(string sender, string receiver)
+    {
+        var request = db.FollowRequests.Find(sender, receiver);
+        if (request == null)
+        {
+            return BadRequest("Follow request not found");
+        }
+        
+        db.FollowRequests.Remove(request);
+        db.SaveChanges();
+        
+        var referer = Request.Headers["Referer"].ToString();
+        if (!string.IsNullOrEmpty(referer))
+        {
+            return Redirect(referer);
+        }
+        
+        return Ok("Follow request deleted successfully");
     }
 }

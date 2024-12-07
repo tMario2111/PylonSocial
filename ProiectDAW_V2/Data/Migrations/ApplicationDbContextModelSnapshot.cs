@@ -250,23 +250,21 @@ namespace ProiectDAW_V2.Data.Migrations
 
             modelBuilder.Entity("ProiectDAW_V2.Models.FollowRequest", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnOrder(0);
 
                     b.Property<string>("ReceiverId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnOrder(1);
 
-                    b.Property<string>("SenderId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime?>("Date")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("SenderId", "ReceiverId");
 
                     b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
 
                     b.ToTable("FollowRequests");
                 });
@@ -410,12 +408,16 @@ namespace ProiectDAW_V2.Data.Migrations
             modelBuilder.Entity("ProiectDAW_V2.Models.FollowRequest", b =>
                 {
                     b.HasOne("ProiectDAW_V2.Models.ApplicationUser", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId");
+                        .WithMany("RequestsReceived")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ProiectDAW_V2.Models.ApplicationUser", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId");
+                        .WithMany("RequestsSent")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Receiver");
 
@@ -455,6 +457,10 @@ namespace ProiectDAW_V2.Data.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Following");
+
+                    b.Navigation("RequestsReceived");
+
+                    b.Navigation("RequestsSent");
                 });
 #pragma warning restore 612, 618
         }

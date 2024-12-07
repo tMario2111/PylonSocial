@@ -49,9 +49,6 @@ public class ProfilesController : Controller
     [HttpPost]
     public async Task<IActionResult> New(Profile profile, IFormFile? profilePicture)
     {
-        // TODO: Aparent profile picture e required
-        // Probabil mai trebuie o migratie si se rezolva
-
         profile.UserId = _userManager.GetUserId(User)!;
 
         if (string.IsNullOrEmpty(profile.FirstName) || profile.FirstName.Length < 3 ||
@@ -133,8 +130,10 @@ public class ProfilesController : Controller
         if (!isLoggedInUser)
         {
             var follower = db.Followers.FirstOrDefault(f => f.FollowerId == userId && f.FollowedId == id);
+            ViewBag.FollowRequest = db.FollowRequests.Find(userId, id) != null;
             ViewBag.Followed = follower != null;
         }
+
         ViewBag.UserId = userId;
 
         return View(profile);
@@ -246,7 +245,6 @@ public class ProfilesController : Controller
 
     public IActionResult Search()
     {
-        // TODO: Fix empty search page crash
         var search = "";
 
         if (!string.IsNullOrEmpty(HttpContext.Request.Query["search"]))
@@ -254,8 +252,14 @@ public class ProfilesController : Controller
             search = Convert.ToString(HttpContext.Request.Query["search"]).Trim();
 
             var profiles =
-                db.Profiles.Where(at => (at.FirstName + " " + at.LastName).Contains(search)).ToList();
+                db.Profiles.Where(
+                    at => (at.FirstName + " " + at.LastName).Contains(search)).ToList();
             ViewBag.Profiles = profiles;
+        }
+        else
+        {
+            // Return all profiles for empty search
+            ViewBag.Profiles = db.Profiles.ToList();
         }
 
         ViewBag.Search = search;

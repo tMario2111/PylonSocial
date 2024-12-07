@@ -29,6 +29,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Follower>().HasOne(f => f.FollowedUser).WithMany(u => u.Followers)
             .HasForeignKey(f => f.FollowedId).OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<FollowRequest>().HasKey(f => new { f.SenderId, f.ReceiverId });
+
         modelBuilder.Entity<FollowRequest>().HasOne(fr => fr.Sender).WithMany(u => u.RequestsSent)
             .HasForeignKey(fr => fr.SenderId).OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<FollowRequest>().HasOne(fr => fr.Receiver).WithMany(u => u.RequestsReceived)
