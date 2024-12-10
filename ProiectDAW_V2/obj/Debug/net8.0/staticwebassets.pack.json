@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\assets\\fallback_profile_picture.png"
     },
     {
+      "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\assets\\friend_requests.svg",
+      "PackagePath": "staticwebassets\\assets\\friend_requests.svg"
+    },
+    {
       "Id": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

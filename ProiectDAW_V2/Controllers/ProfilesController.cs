@@ -228,6 +228,7 @@ public class ProfilesController : Controller
             profile.FirstName = requestProfile.FirstName;
             profile.LastName = requestProfile.LastName;
             profile.Description = requestProfile.Description;
+            profile.Visibility = requestProfile.Visibility;
             db.SaveChanges();
             return RedirectToAction("Show", "Profiles");
         }

@@ -1,0 +1,25 @@
+﻿<h3>Pending follow requests</h3>
+
+@foreach (var request in ViewBag.FollowRequests)
+{
+    <div class="mb-3 d-flex flex-row align-items-center" style="background-color: lightgrey; border-radius: 15px;">
+        <a asp-controller="Profiles" asp-action="Show" asp-route-id="@request.Sender.Id" style="text-decoration: none; color: inherit;">
+            <div class="d-flex flex-row align-items-center">
+                <img
+                    src="@(string.IsNullOrEmpty(request.Sender.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : request.Sender.Profile.ProfilePicture)"
+                    alt="profile picture"
+                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; padding: 5px 5px 5px 5px;"/>
+                <p class="ms-3 fs-4">@request.Sender.Profile.FirstName @request.Sender.Profile.LastName</p>
+            </div>
+        </a>
+        <div class="ms-auto d-flex">
+            <button class="btn btn-danger">Deny request</button>
+            <form method="post" asp-controller="FollowRequests" asp-action="AcceptRequest" 
+                  asp-route-senderId="@request.Sender.Id" class="ms-2 me-4">
+                <button type="submit" class="btn btn-primary">
+                    Accept
+                </button>
+            </form>
+        </div>
+    </div>
+}

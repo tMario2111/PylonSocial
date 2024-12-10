@@ -1,10 +1,24 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using ProiectDAW_V2.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext Db;
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="FollowRequests" asp-action="Show">
+                <div class="d-flex flex-row justify-content-center align-items-center gap-1">
+                    <img src="/assets/friend_requests.svg" alt="Friend requests">
+                    
+                    @* Afiseaza cate request-uri de follow are user-ul logat in prezent *@
+                    <span style="color: black">
+                        @(Db.FollowRequests.Count(fr => fr.ReceiverId == UserManager.GetUserId(User)))
+                    </span>
+                </div>
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Profiles" asp-action="Show" asp-route-id="">My profile</a>
         </li>

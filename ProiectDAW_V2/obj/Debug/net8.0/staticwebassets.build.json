@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SzX9gjOhZFExX41MMM38QzFxaFfkt6JJ+9ESbokndsE=",
+  "Hash": "ErrP7Ub5+JfdeZ2rog3ikcS58w8usXvABuEzeruLM30=",
   "Source": "ProiectDAW_V2",
   "BasePath": "_content/ProiectDAW_V2",
   "Mode": "Default",
@@ -1212,6 +1212,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\fallback_profile_picture.png"
+    },
+    {
+      "Identity": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\assets\\friend_requests.svg",
+      "SourceId": "ProiectDAW_V2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\",
+      "BasePath": "_content/ProiectDAW_V2",
+      "RelativePath": "assets/friend_requests.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\friend_requests.svg"
     },
     {
       "Identity": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\css\\site.css",

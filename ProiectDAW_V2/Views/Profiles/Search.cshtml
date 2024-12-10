@@ -3,14 +3,5 @@
 @* TODO: Nebunia asta ar trebui sa fie paginata *@
 @foreach (var profile in ViewBag.Profiles)
 {
-    <a asp-controller="Profiles" asp-action="Show" asp-route-id="@profile.UserId" style="text-decoration: none; color: inherit;">
-        <div class="mb-3 d-flex flex-row align-items-center" style="background-color: lightgrey; border-radius: 15px;">
-            <img
-                src="@(string.IsNullOrEmpty(profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : profile.ProfilePicture)"
-                alt="profile picture"
-                @* # FRONTEND ENGINEER *@
-                style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; padding: 5px 5px 5px 5px;"/>
-            <p class="ms-3 fs-4">@profile.FirstName @profile.LastName</p>
-        </div>
-    </a>
+    <partial name="ProfileCard" model="profile"/>
 }
