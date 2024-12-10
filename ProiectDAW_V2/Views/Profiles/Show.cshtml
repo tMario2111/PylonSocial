@@ -8,8 +8,14 @@
             <h2>@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h2>
             <p>@ViewBag.Profile.Description</p>
             <div class="d-flex flex-row gap-4">
-                <p class="fw-bold">@ViewBag.Profile.User.Followers.Count followers</p>
-                <p class="fw-bold">@ViewBag.Profile.User.Following.Count following</p>
+                <a class="fw-bold" asp-controller="Followers" asp-action="Show"
+                   asp-route-userId="@ViewBag.Profile.UserId" asp-route-showType="Followers">
+                    @ViewBag.Profile.User.Followers.Count followers
+                </a>
+                <a class="fw-bold" asp-controller="Followers" asp-action="Show"
+                   asp-route-userId="@ViewBag.Profile.UserId" asp-route-showType="Following">
+                    @ViewBag.Profile.User.Following.Count following
+                </a>
             </div>
         </div>
         @if (ViewBag.CanEdit)
@@ -41,7 +47,7 @@
                     <form asp-controller="Followers" asp-action="New" method="post">
                         <input type="hidden" name="sender" value="@ViewBag.UserId"/>
                         <input type="hidden" name="receiver" value="@ViewBag.Profile.UserId"/>
-                            <button type="submit" class="btn btn-sm btn-secondary h-25 mt-1">Follow</button>
+                        <button type="submit" class="btn btn-sm btn-secondary h-25 mt-1">Follow</button>
                         @Html.AntiForgeryToken()
                     </form>
                 }
@@ -57,7 +63,7 @@
             }
         }
     </div>
-    @if (!ViewBag.CanEdit && ViewBag.Profile.Visibility == Profile.VisibilityType.Private)
+    @if (!ViewBag.CanEdit && !ViewBag.Followed && ViewBag.Profile.Visibility == Profile.VisibilityType.Private)
     {
         <h5>This is a private profile. Follow the user to be able to see their profile.</h5>
     }

@@ -13,8 +13,11 @@
             </div>
         </a>
         <div class="ms-auto d-flex">
-            <button class="btn btn-danger">Deny request</button>
-            <form method="post" asp-controller="FollowRequests" asp-action="AcceptRequest" 
+            <form method="post" asp-controller="FollowRequests" asp-action="DenyRequest"
+                  asp-route-senderId="@request.Sender.Id">
+                <button class="btn btn-danger">Deny request</button>
+            </form>
+            <form method="post" asp-controller="FollowRequests" asp-action="AcceptRequest"
                   asp-route-senderId="@request.Sender.Id" class="ms-2 me-4">
                 <button type="submit" class="btn btn-primary">
                     Accept

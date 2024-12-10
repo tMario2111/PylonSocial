@@ -35,8 +35,6 @@ public class FollowRequestsController : Controller
     [HttpPost]
     public IActionResult AcceptRequest(string senderId)
     {
-        Console.WriteLine("A rulat!");
-        
         var userId = _userManager.GetUserId(User);
         var requestToDelete = db.FollowRequests.Find(senderId, userId);
         if (requestToDelete == null)
@@ -52,5 +50,22 @@ public class FollowRequestsController : Controller
         db.SaveChanges();
         
         return RedirectToAction("Show", "FollowRequests");
+    }
+
+    [HttpPost]
+    public IActionResult DenyRequest(string senderId)
+    {
+        var userId = _userManager.GetUserId(User);
+        var requestToDelete = db.FollowRequests.Find(senderId, userId);
+        
+        if (requestToDelete == null)
+        {
+            return NotFound();
+        }
+        db.FollowRequests.Remove(requestToDelete);
+        db.SaveChanges();
+
+        return RedirectToAction("Show", "FollowRequests");
+ 
     }
 }

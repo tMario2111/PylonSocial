@@ -1,0 +1,15 @@
+﻿@using ProiectDAW_V2.Controllers
+
+@if (ViewBag.ShowType == FollowersController.ShowType.Followers)
+{
+    <h3 class="mb-5">@ViewBag.Name's followers:</h3>
+}
+else
+{
+    <h3 class="mb-5">Users followed by @ViewBag.Name:</h3>
+}
+
+@foreach (var profile in ViewBag.Profiles)
+{
+    <partial name="ProfileCard" model="profile"/>
+}
