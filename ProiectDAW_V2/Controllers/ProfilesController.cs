@@ -165,13 +165,7 @@ public class ProfilesController : Controller
         if (string.IsNullOrEmpty(requestProfile.Description) || requestProfile.Description.Length < 3 ||
             requestProfile.Description.Length > 100)
             ModelState.AddModelError(string.Empty, "Invalid description");
-
-        foreach (var key in Request.Form.Keys)
-        {
-            string value = Request.Form[key];
-            Console.WriteLine($"Key: {key}, Value: {value}");
-        }
-
+        
         // TODO: Rezolva problema cu checkbox-ul vietii
         // if (deleteProfilePicture)
         // {

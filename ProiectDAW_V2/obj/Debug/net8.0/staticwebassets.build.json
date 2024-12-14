@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ErrP7Ub5+JfdeZ2rog3ikcS58w8usXvABuEzeruLM30=",
+  "Hash": "Nu2qqiBLw8tJ+3KkGgSmWD5loweCtYH0uNzoKFxDsm4=",
   "Source": "ProiectDAW_V2",
   "BasePath": "_content/ProiectDAW_V2",
   "Mode": "Default",
@@ -2447,6 +2447,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\profile_pictures\\jlst0jtc0o3rftnlc7oggl3r1gr912kz.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\jxiu3dc06tmr2hi7osn3brbygt6petky.jpg",
+      "SourceId": "ProiectDAW_V2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\",
+      "BasePath": "_content/ProiectDAW_V2",
+      "RelativePath": "profile_pictures/jxiu3dc06tmr2hi7osn3brbygt6petky.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\profile_pictures\\jxiu3dc06tmr2hi7osn3brbygt6petky.jpg"
     },
     {
       "Identity": "C:\\Users\\Mario\\RiderProjects\\ProiectDAW_V2\\ProiectDAW_V2\\wwwroot\\profile_pictures\\mfqs5fkln4w9p4qi2agcig5vmrsgnkwc.jpg",

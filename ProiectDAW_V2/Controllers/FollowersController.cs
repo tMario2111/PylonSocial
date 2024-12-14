@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProiectDAW_V2.Data;
@@ -21,6 +22,7 @@ public class FollowersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult New(string sender, string receiver)
     {
         if (db.Followers.FirstOrDefault(f => f.FollowerId == sender && f.FollowedId == receiver) != null)
@@ -58,6 +60,7 @@ public class FollowersController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult Delete(string sender, string receiver)
     {
         if (db.Followers.FirstOrDefault(f => f.FollowerId == sender && f.FollowedId == receiver) == null)
