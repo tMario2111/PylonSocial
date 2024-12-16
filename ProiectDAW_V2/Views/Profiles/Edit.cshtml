@@ -29,8 +29,8 @@
             </div>
 
             <div class="form-group mb-3">
-                <input type="checkbox"  id="deleteProfilePicture" name="deleteProfilePicture" class="form-check-input"/>
-                <label for="deleteProfilePicture" class="form-check-label">Delete current profile picture and keep the default one</label>
+                @Html.CheckBoxFor(m => m.DeleteProfilePicture)
+                <label asp-for="DeleteProfilePicture" class="form-check-label">Delete current profile picture and keep the default one</label>
             </div>
 
             <div class="form-group mb-3">

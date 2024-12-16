@@ -37,4 +37,6 @@ public class Profile
     }
 
     [Required] public VisibilityType Visibility { get; set; }
+
+    [NotMapped] public bool DeleteProfilePicture { get; set; }
 }

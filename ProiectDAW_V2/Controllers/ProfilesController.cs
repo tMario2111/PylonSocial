@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ public class ProfilesController : Controller
         _env = env;
     }
 
+    [Authorize(Roles="User,Admin")]
     public IActionResult New()
     {
         var profile = new Profile();
@@ -139,6 +141,7 @@ public class ProfilesController : Controller
         return View(profile);
     }
 
+    [Authorize(Roles="User,Admin")]
     public IActionResult Edit()
     {
         var userId = _userManager.GetUserId(User)!;
@@ -166,21 +169,21 @@ public class ProfilesController : Controller
             requestProfile.Description.Length > 100)
             ModelState.AddModelError(string.Empty, "Invalid description");
         
-        // TODO: Rezolva problema cu checkbox-ul vietii
-        // if (deleteProfilePicture)
-        // {
-        //     if (!string.IsNullOrEmpty(profile.ProfilePicture))
-        //     {
-        //         var oldFilePath = Path.Combine(_env.WebRootPath, profile.ProfilePicture.TrimStart('/'));
-        //         if (System.IO.File.Exists(oldFilePath))
-        //         {
-        //             System.IO.File.Delete(oldFilePath);
-        //         }
-        //     }
-        //
-        //     profile.ProfilePicture = null;
-        // }
-        if (profilePicture != null && profilePicture.Length > 0)
+        Console.WriteLine(requestProfile.DeleteProfilePicture);
+        
+        if (requestProfile.DeleteProfilePicture)
+        {
+            if (!string.IsNullOrEmpty(profile.ProfilePicture))
+            {
+                var oldFilePath = Path.Combine(_env.WebRootPath, profile.ProfilePicture.TrimStart('/'));
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+            }
+            profile.ProfilePicture = null;
+        }
+        else if (profilePicture != null && profilePicture.Length > 0)
         {
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             var fileExtension = Path.GetExtension(profilePicture.FileName).ToLower();

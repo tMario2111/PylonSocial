@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProiectDAW_V2.Data;
@@ -22,7 +23,6 @@ public class FollowRequestsController : Controller
 
     public IActionResult Show()
     {
-        // AI RAMAS AICI!
         ViewBag.FollowRequests =
             db.FollowRequests.Include(fr => fr.Sender).Include(fr => fr.Receiver)
                 .Include(fr => fr.Sender.Profile)
@@ -33,6 +33,7 @@ public class FollowRequestsController : Controller
     }
 
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult AcceptRequest(string senderId)
     {
         var userId = _userManager.GetUserId(User);
@@ -41,6 +42,7 @@ public class FollowRequestsController : Controller
         {
             return NotFound();
         }
+
         db.FollowRequests.Remove(requestToDelete);
 
         var follow = new Follower();
@@ -48,24 +50,25 @@ public class FollowRequestsController : Controller
         follow.FollowedId = userId;
         db.Followers.Add(follow);
         db.SaveChanges();
-        
+
         return RedirectToAction("Show", "FollowRequests");
     }
 
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult DenyRequest(string senderId)
     {
         var userId = _userManager.GetUserId(User);
         var requestToDelete = db.FollowRequests.Find(senderId, userId);
-        
+
         if (requestToDelete == null)
         {
             return NotFound();
         }
+
         db.FollowRequests.Remove(requestToDelete);
         db.SaveChanges();
 
         return RedirectToAction("Show", "FollowRequests");
- 
     }
 }
