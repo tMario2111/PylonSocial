@@ -1,6 +1,5 @@
 ﻿<div class="d-flex flex-column align-items-center gap-4 mt-5">
     <div class="d-flex flex-row gap-3">
-        @* TODO: Poate ar trebui stocata local imaginea de fallback *@
         <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)"
              alt="profile picture"
              style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;"/>
@@ -61,6 +60,12 @@
                     </form>
                 }
             }
+        }
+        @if (ViewBag.CanDelete)
+        {
+            <form asp-controller="Profiles" asp-action="Delete" asp-route-id="@ViewBag.Profile.UserId" method="post">
+                <button type="submit" class="btn btn-sm btn-danger h-25 mt-1">Delete user</button>
+            </form>
         }
     </div>
     @if (!ViewBag.CanEdit && !ViewBag.Followed && ViewBag.Profile.Visibility == Profile.VisibilityType.Private)

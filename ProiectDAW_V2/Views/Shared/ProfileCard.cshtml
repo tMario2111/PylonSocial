@@ -1,9 +1,16 @@
-﻿<a asp-controller="Profiles" asp-action="Show" asp-route-id="@Model.UserId" style="text-decoration: none; color: inherit;">
-    <div class="mb-3 d-flex flex-row align-items-center" style="background-color: lightgrey; border-radius: 15px;">
-        <img
-            src="@(string.IsNullOrEmpty(Model.ProfilePicture) ? "/assets/fallback_profile_picture.png" : Model.ProfilePicture)"
-            alt="profile picture"
-            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; padding: 5px 5px 5px 5px;"/>
-        <p class="ms-3 fs-4">@Model.FirstName @Model.LastName</p>
+﻿<a asp-controller="Profiles" asp-action="Show" asp-route-id="@Model.UserId" class="card mb-3 mx-auto" style="max-width: 600px; border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.09) 0 3px 12px; text-decoration: none; color: inherit;">
+    <div class="row g-0">
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+            <img
+                src="@(string.IsNullOrEmpty(Model.ProfilePicture) ? "/assets/fallback_profile_picture.png" : Model.ProfilePicture)"
+                alt="profile picture"
+                class="img-fluid rounded-circle"
+                style="width: 100px; height: 100px; object-fit: cover; padding: 10px;"/>
+        </div>
+        <div class="col-md-8 d-flex align-items-center">
+            <div class="card-body">
+                <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+            </div>
+        </div>
     </div>
 </a>

@@ -27,7 +27,8 @@ public class ProfilesController : Controller
         _env = env;
     }
 
-    [Authorize(Roles="User,Admin")]
+    // TODO: Aparent nu se afiseaza erorile de validare (?)
+    [Authorize(Roles = "User,Admin")]
     public IActionResult New()
     {
         var profile = new Profile();
@@ -113,35 +114,53 @@ public class ProfilesController : Controller
 
     public IActionResult Show(string? id = null)
     {
-        var userId = _userManager.GetUserId(User)!;
+        ApplicationUser? user = null;
+        if (id != null)
+        {
+            user = _userManager.FindByIdAsync(id).Result;
+            if (user == null)
+                return NotFound();
+        }
+        else
+        {
+            if (!User.Identity.IsAuthenticated)
+                return NotFound();
+        }
+        
+        var loggedInUserId = _userManager.GetUserId(User)!;
         var profile = (id == null)
             ? db.Profiles.Include(p => p.User)
                 .Include(p => p.User.Followers)
                 .Include(p => p.User.Following)
-                .FirstOrDefault(x => x.UserId == userId)
+                .FirstOrDefault(x => x.UserId == _userManager.GetUserId(User)!)
             : db.Profiles.Include(p => p.User)
                 .Include(p => p.User.Followers)
                 .Include(p => p.User.Following)
                 .FirstOrDefault(x => x.UserId == id);
 
-        var isLoggedInUser = id == null || id == userId;
+        var isLoggedInUser = id == null || id == loggedInUserId;
 
         ViewBag.Profile = profile!;
         ViewBag.CanEdit = isLoggedInUser;
-
+        ViewBag.CanDelete = false;
+        
         if (!isLoggedInUser)
         {
-            var follower = db.Followers.FirstOrDefault(f => f.FollowerId == userId && f.FollowedId == id);
-            ViewBag.FollowRequest = db.FollowRequests.Find(userId, id) != null;
+            var follower = db.Followers.FirstOrDefault(f => f.FollowerId == loggedInUserId && f.FollowedId == id);
+            ViewBag.FollowRequest = db.FollowRequests.Find(loggedInUserId, id) != null;
             ViewBag.Followed = follower != null;
+            if (User.IsInRole("Admin"))
+            {
+                ViewBag.CanDelete = true;
+            }
         }
 
-        ViewBag.UserId = userId;
+        ViewBag.UserId = loggedInUserId;
 
         return View(profile);
     }
 
-    [Authorize(Roles="User,Admin")]
+    [Authorize(Roles = "User,Admin")]
     public IActionResult Edit()
     {
         var userId = _userManager.GetUserId(User)!;
@@ -168,9 +187,9 @@ public class ProfilesController : Controller
         if (string.IsNullOrEmpty(requestProfile.Description) || requestProfile.Description.Length < 3 ||
             requestProfile.Description.Length > 100)
             ModelState.AddModelError(string.Empty, "Invalid description");
-        
+
         Console.WriteLine(requestProfile.DeleteProfilePicture);
-        
+
         if (requestProfile.DeleteProfilePicture)
         {
             if (!string.IsNullOrEmpty(profile.ProfilePicture))
@@ -181,6 +200,7 @@ public class ProfilesController : Controller
                     System.IO.File.Delete(oldFilePath);
                 }
             }
+
             profile.ProfilePicture = null;
         }
         else if (profilePicture != null && profilePicture.Length > 0)
@@ -239,6 +259,24 @@ public class ProfilesController : Controller
         }
 
         return View(requestProfile);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult Delete(string id)
+    {
+        var userToBeDeleted = _userManager.FindByIdAsync(id).Result;
+        if (userToBeDeleted == null)
+            return NotFound();
+        
+        // TODO: Sterge si postarile / comentariile
+        db.Followers.RemoveRange(db.Followers.Where(f => f.FollowedId == id || f.FollowerId == id));
+        db.FollowRequests.RemoveRange(db.FollowRequests.Where(fr => fr.SenderId == id || fr.ReceiverId == id));
+        db.Profiles.RemoveRange(db.Profiles.Where(p => p.UserId == id));
+        _userManager.DeleteAsync(userToBeDeleted).GetAwaiter().GetResult();
+        db.SaveChanges();
+        
+        return RedirectToAction("Index", "Home");
     }
 
     public IActionResult Search()
