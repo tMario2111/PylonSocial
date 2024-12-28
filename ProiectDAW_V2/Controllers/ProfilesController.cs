@@ -54,11 +54,11 @@ public class ProfilesController : Controller
     {
         profile.UserId = _userManager.GetUserId(User)!;
 
-        if (string.IsNullOrEmpty(profile.FirstName) || profile.FirstName.Length < 3 ||
+        if (string.IsNullOrEmpty(profile.FirstName) || profile.FirstName.Length < 2 ||
             profile.FirstName.Length > 100)
             ModelState.AddModelError(string.Empty, "Invalid first name");
 
-        if (string.IsNullOrEmpty(profile.LastName) || profile.LastName.Length < 3 ||
+        if (string.IsNullOrEmpty(profile.LastName) || profile.LastName.Length < 2 ||
             profile.LastName.Length > 100)
             ModelState.AddModelError(string.Empty, "Invalid last name");
 

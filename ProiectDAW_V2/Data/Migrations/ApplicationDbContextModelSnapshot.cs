@@ -286,6 +286,33 @@ namespace ProiectDAW_V2.Data.Migrations
                     b.ToTable("Followers");
                 });
 
+            modelBuilder.Entity("ProiectDAW_V2.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ModeratorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
             modelBuilder.Entity("ProiectDAW_V2.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -349,9 +376,28 @@ namespace ProiectDAW_V2.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Profiles");
+                });
+
+            modelBuilder.Entity("ProiectDAW_V2.Models.UserGroup", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -446,8 +492,27 @@ namespace ProiectDAW_V2.Data.Migrations
             modelBuilder.Entity("ProiectDAW_V2.Models.Profile", b =>
                 {
                     b.HasOne("ProiectDAW_V2.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithOne("Profile")
+                        .HasForeignKey("ProiectDAW_V2.Models.Profile", "UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ProiectDAW_V2.Models.UserGroup", b =>
+                {
+                    b.HasOne("ProiectDAW_V2.Models.Group", "Group")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProiectDAW_V2.Models.ApplicationUser", "User")
+                        .WithMany("UserGroups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
 
                     b.Navigation("User");
                 });
@@ -458,9 +523,18 @@ namespace ProiectDAW_V2.Data.Migrations
 
                     b.Navigation("Following");
 
+                    b.Navigation("Profile");
+
                     b.Navigation("RequestsReceived");
 
                     b.Navigation("RequestsSent");
+
+                    b.Navigation("UserGroups");
+                });
+
+            modelBuilder.Entity("ProiectDAW_V2.Models.Group", b =>
+                {
+                    b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618
         }

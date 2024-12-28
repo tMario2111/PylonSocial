@@ -17,6 +17,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Follower> Followers { get; set; }
     public DbSet<FollowRequest> FollowRequests { get; set; }
 
+    public DbSet<Group> Groups { get; set; }
+
+    public DbSet<UserGroup> UserGroups { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -35,5 +39,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(fr => fr.SenderId).OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<FollowRequest>().HasOne(fr => fr.Receiver).WithMany(u => u.RequestsReceived)
             .HasForeignKey(fr => fr.ReceiverId);
+
+        modelBuilder.Entity<UserGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });
+        modelBuilder.Entity<UserGroup>().HasOne(ug => ug.User).WithMany(u => u.UserGroups)
+            .HasForeignKey(ug => ug.UserId);
+        modelBuilder.Entity<UserGroup>().HasOne(ug => ug.Group).WithMany(g => g.UserGroups)
+            .HasForeignKey(ug => ug.GroupId);
     }
 }
