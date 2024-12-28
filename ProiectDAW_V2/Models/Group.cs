@@ -6,7 +6,7 @@ public class Group
 {
     [Key] public int Id { get; set; }
 
-    [Required] public string ModeratorId { get; set; }
+    public string? ModeratorId { get; set; }
 
     [Required]
     [MinLength(2, ErrorMessage = "Group name is too short")]
