@@ -21,6 +21,14 @@ public class GroupsController : Controller
     }
 
     [Authorize(Roles = "User,Admin")]
+    public IActionResult Index()
+    {
+        ViewBag.Groups = _db.Groups.ToList();
+        
+        return View();
+    }
+    
+    [Authorize(Roles = "User,Admin")]
     public IActionResult New()
     {
         var group = new Group();
@@ -42,17 +50,30 @@ public class GroupsController : Controller
         {
             _db.Groups.Add(group);
             _db.SaveChanges();
+
+            var userGroup = new UserGroup();
+            userGroup.GroupId = group.Id;
+            userGroup.UserId = group.ModeratorId;
+            _db.UserGroups.Add(userGroup);
+            _db.SaveChanges();
+            
             return RedirectToAction("Index", "Home");
         }
-
-        foreach (var state in ModelState)
-        {
-            foreach (var error in state.Value.Errors)
-            {
-                Console.WriteLine($"Key: {state.Key}, Error: {error.ErrorMessage}");
-            }
-        }
-
+        
         return View(group);
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult Show(int id)
+    {
+        var group = _db.Groups.Find(id);
+        if (group == null)
+            return NotFound();
+
+        ViewBag.Group = group;
+
+        ViewBag.MemberCount = _db.UserGroups.Count(ug => ug.GroupId == group.Id).ToString();
+        
+        return View();
     }
 }
