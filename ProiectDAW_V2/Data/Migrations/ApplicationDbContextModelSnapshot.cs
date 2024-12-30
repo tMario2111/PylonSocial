@@ -300,7 +300,6 @@ namespace ProiectDAW_V2.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ModeratorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -311,6 +310,23 @@ namespace ProiectDAW_V2.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("ProiectDAW_V2.Models.GroupJoinRequest", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("UserId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("GroupJoinRequests");
                 });
 
             modelBuilder.Entity("ProiectDAW_V2.Models.Post", b =>
@@ -489,6 +505,25 @@ namespace ProiectDAW_V2.Data.Migrations
                     b.Navigation("FollowerUser");
                 });
 
+            modelBuilder.Entity("ProiectDAW_V2.Models.GroupJoinRequest", b =>
+                {
+                    b.HasOne("ProiectDAW_V2.Models.Group", "Group")
+                        .WithMany("GroupJoinRequests")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProiectDAW_V2.Models.ApplicationUser", "User")
+                        .WithMany("GroupJoinRequests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ProiectDAW_V2.Models.Profile", b =>
                 {
                     b.HasOne("ProiectDAW_V2.Models.ApplicationUser", "User")
@@ -523,6 +558,8 @@ namespace ProiectDAW_V2.Data.Migrations
 
                     b.Navigation("Following");
 
+                    b.Navigation("GroupJoinRequests");
+
                     b.Navigation("Profile");
 
                     b.Navigation("RequestsReceived");
@@ -534,6 +571,8 @@ namespace ProiectDAW_V2.Data.Migrations
 
             modelBuilder.Entity("ProiectDAW_V2.Models.Group", b =>
                 {
+                    b.Navigation("GroupJoinRequests");
+
                     b.Navigation("UserGroups");
                 });
 #pragma warning restore 612, 618

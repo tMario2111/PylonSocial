@@ -13,4 +13,6 @@ public class ApplicationUser : IdentityUser
     public virtual ICollection<FollowRequest>? RequestsReceived { get; set; }
     
     public virtual ICollection<UserGroup>? UserGroups { get; set; }
+    
+    public virtual ICollection<GroupJoinRequest>? GroupJoinRequests { get; set; }
 }

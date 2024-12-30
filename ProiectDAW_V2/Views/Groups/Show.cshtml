@@ -3,3 +3,22 @@
     <h5 style="color: grey;">@ViewBag.Group.Description</h5>
     <h6>@ViewBag.MemberCount members</h6>
 </div>
+
+@if (!ViewBag.IsMember)
+{
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <h5 class="mt-5 mb-3" style="text-align: center">You must join the group to see posts</h5>
+        @if (ViewBag.PendingRequest)
+        {
+            <form asp-controller="GroupJoinRequests" asp-action="Delete" asp-route-groupId="@ViewBag.Group.Id"> 
+                <button class="btn btn-primary" type="submit">Cancel join request</button>
+            </form>
+        }
+        else
+        {
+            <form asp-controller="GroupJoinRequests" asp-action="New" asp-route-groupId="@ViewBag.Group.Id">
+                <button class="btn btn-primary" type="submit">Request join</button>
+            </form>
+        }
+    </div>
+}

@@ -21,6 +21,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<UserGroup> UserGroups { get; set; }
 
+    public DbSet<GroupJoinRequest> GroupJoinRequests { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -45,5 +47,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(ug => ug.UserId);
         modelBuilder.Entity<UserGroup>().HasOne(ug => ug.Group).WithMany(g => g.UserGroups)
             .HasForeignKey(ug => ug.GroupId);
+
+        modelBuilder.Entity<GroupJoinRequest>().HasKey(x => new { x.UserId, x.GroupId });
+        modelBuilder.Entity<GroupJoinRequest>().HasOne(x => x.User)
+            .WithMany(x => x.GroupJoinRequests).HasForeignKey(x => x.UserId);
+        modelBuilder.Entity<GroupJoinRequest>().HasOne(x => x.Group)
+            .WithMany(x => x.GroupJoinRequests).HasForeignKey(x => x.GroupId);
     }
 }

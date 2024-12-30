@@ -2,27 +2,35 @@
 
 @foreach (var request in ViewBag.FollowRequests)
 {
-    <div class="mb-3 d-flex flex-row align-items-center" style="background-color: lightgrey; border-radius: 15px;">
-        <a asp-controller="Profiles" asp-action="Show" asp-route-id="@request.Sender.Id" style="text-decoration: none; color: inherit;">
-            <div class="d-flex flex-row align-items-center">
+    <a asp-controller="Profiles" asp-action="Show" asp-route-id="@request.Sender.Profile.UserId" class="card mb-3 mx-auto" style="max-width: 600px; border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.09) 0 3px 12px; text-decoration: none; color: inherit;">
+        <div class="row g-0">
+            <div class="col-md-4 d-flex justify-content-center align-items-center">
                 <img
                     src="@(string.IsNullOrEmpty(request.Sender.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : request.Sender.Profile.ProfilePicture)"
                     alt="profile picture"
-                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; padding: 5px 5px 5px 5px;"/>
-                <p class="ms-3 fs-4">@request.Sender.Profile.FirstName @request.Sender.Profile.LastName</p>
+                    class="img-fluid rounded-circle"
+                    style="width: 100px; height: 100px; object-fit: cover; padding: 10px;"/>
             </div>
-        </a>
-        <div class="ms-auto d-flex">
-            <form method="post" asp-controller="FollowRequests" asp-action="DenyRequest"
-                  asp-route-senderId="@request.Sender.Id">
-                <button class="btn btn-danger">Deny request</button>
-            </form>
-            <form method="post" asp-controller="FollowRequests" asp-action="AcceptRequest"
-                  asp-route-senderId="@request.Sender.Id" class="ms-2 me-4">
-                <button type="submit" class="btn btn-primary">
-                    Accept
-                </button>
-            </form>
+            <div class="col-md-5 d-flex align-items-center">
+                <div class="card-body">
+                    <h5 class="card-title">@request.Sender.Profile.FirstName @request.Sender.Profile.LastName</h5>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-center justify-content-end">
+                <div class="d-flex flex-column align-items-center justify-content-center me-3">
+                    <form method="post" asp-controller="FollowRequests" asp-action="DenyRequest"
+                          asp-route-senderId="@request.Sender.Id">
+                        <button class="btn btn-sm btn-danger" style="white-space: nowrap; width: 125px">Deny request</button>
+                    </form>
+                    <form method="post" asp-controller="FollowRequests" asp-action="AcceptRequest"
+                          asp-route-senderId="@request.Sender.Id" class="mt-2">
+                        <button type="submit" class="btn btn-sm btn-primary" style="white-space: nowrap; width: 125px">
+                            Accept
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
+    </a>
 }
+

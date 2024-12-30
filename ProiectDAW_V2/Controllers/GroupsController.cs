@@ -24,10 +24,10 @@ public class GroupsController : Controller
     public IActionResult Index()
     {
         ViewBag.Groups = _db.Groups.ToList();
-        
+
         return View();
     }
-    
+
     [Authorize(Roles = "User,Admin")]
     public IActionResult New()
     {
@@ -56,10 +56,10 @@ public class GroupsController : Controller
             userGroup.UserId = group.ModeratorId;
             _db.UserGroups.Add(userGroup);
             _db.SaveChanges();
-            
+
             return RedirectToAction("Index", "Home");
         }
-        
+
         return View(group);
     }
 
@@ -73,7 +73,15 @@ public class GroupsController : Controller
         ViewBag.Group = group;
 
         ViewBag.MemberCount = _db.UserGroups.Count(ug => ug.GroupId == group.Id).ToString();
+
+        var userId = _userManager.GetUserId(User)!;
+
+        ViewBag.IsMember = _db.UserGroups.Any(ug => ug.GroupId == group.Id && ug.UserId == userId);
+        ViewBag.PendingRequest = _db.GroupJoinRequests.Any
+            (gr => gr.GroupId == group.Id && gr.UserId == userId);
         
+        
+
         return View();
     }
 }

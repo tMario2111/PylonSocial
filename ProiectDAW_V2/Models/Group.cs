@@ -19,4 +19,6 @@ public class Group
     public string Description { get; set; }
 
     public virtual ICollection<UserGroup>? UserGroups { get; set; }
+    
+    public virtual ICollection<GroupJoinRequest>? GroupJoinRequests { get; set; }
 }
