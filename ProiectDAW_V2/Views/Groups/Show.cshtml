@@ -1,4 +1,14 @@
-﻿<div class="d-flex flex-column justify-content-center align-items-center">
+﻿@if (ViewBag.IsModerator)
+{
+    <div class="d-flex flex-row align-items-center justify-content-end mb-3">
+        <a class="btn btn-primary h-25" asp-controller="GroupJoinRequests" asp-action="Show"
+           asp-route-groupId="@ViewBag.Group.Id">
+            @ViewBag.JoinRequestCount new join requests
+        </a>
+    </div>
+}
+
+<div class="d-flex flex-column justify-content-center align-items-center">
     <h3>@ViewBag.Group.Name</h3>
     <h5 style="color: grey;">@ViewBag.Group.Description</h5>
     <h6>@ViewBag.MemberCount members</h6>
@@ -10,7 +20,7 @@
         <h5 class="mt-5 mb-3" style="text-align: center">You must join the group to see posts</h5>
         @if (ViewBag.PendingRequest)
         {
-            <form asp-controller="GroupJoinRequests" asp-action="Delete" asp-route-groupId="@ViewBag.Group.Id"> 
+            <form asp-controller="GroupJoinRequests" asp-action="Delete" asp-route-groupId="@ViewBag.Group.Id">
                 <button class="btn btn-primary" type="submit">Cancel join request</button>
             </form>
         }

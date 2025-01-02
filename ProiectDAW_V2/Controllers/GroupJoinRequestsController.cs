@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProiectDAW_V2.Data;
 using ProiectDAW_V2.Models;
 
@@ -19,7 +20,7 @@ public class GroupJoinRequestsController : Controller
         _userManager = userManager;
         _roleManager = roleManager;
     }
-    
+
     [Authorize(Roles = "User,Admin")]
     [HttpPost]
     public IActionResult New(int groupId)
@@ -27,9 +28,9 @@ public class GroupJoinRequestsController : Controller
         var group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
         if (group == null)
             return NotFound();
-        
+
         var userId = _userManager.GetUserId(User)!;
-        
+
         if (_db.GroupJoinRequests.Any(g => g.UserId == userId && g.GroupId == groupId))
             return BadRequest("Request already sent");
 
@@ -38,13 +39,13 @@ public class GroupJoinRequestsController : Controller
         groupJoinRequest.UserId = userId;
         _db.GroupJoinRequests.Add(groupJoinRequest);
         _db.SaveChanges();
-        
+
         var referer = Request.Headers["Referer"].ToString();
         if (!string.IsNullOrEmpty(referer))
         {
             return Redirect(referer);
         }
-        
+
         return Ok();
     }
 
@@ -55,13 +56,81 @@ public class GroupJoinRequestsController : Controller
         var group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
         if (group == null)
             return NotFound();
-        
+
         var userId = _userManager.GetUserId(User)!;
-        
+
         if (!_db.GroupJoinRequests.Any(g => g.UserId == userId && g.GroupId == groupId))
             return BadRequest("Request does not exist");
-        
+
         _db.GroupJoinRequests.Remove(_db.GroupJoinRequests.Find(userId, groupId));
+        _db.SaveChanges();
+
+        var referer = Request.Headers["Referer"].ToString();
+        if (!string.IsNullOrEmpty(referer))
+        {
+            return Redirect(referer);
+        }
+
+        return Ok();
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult Show(int groupId)
+    {
+        var group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
+        if (group == null)
+            return NotFound();
+
+        var userId = _userManager.GetUserId(User)!;
+        if (group.ModeratorId != userId)
+            return Unauthorized();
+
+        ViewBag.Group = group;
+
+        ViewBag.GroupJoinRequests = _db.GroupJoinRequests
+            .Include(g => g.User)
+            .Include(g => g.User.Profile)
+            .Where(g => g.GroupId == groupId);
+
+        return View();
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    [HttpPost]
+    public IActionResult AcceptRequest(string userId, int groupId)
+    {
+        var group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
+        if (group == null)
+            return NotFound();
+        
+        var userGroup = new UserGroup();
+        userGroup.GroupId = groupId;
+        userGroup.UserId = userId;
+        _db.UserGroups.Add(userGroup);
+        
+        var joinRequst = _db.GroupJoinRequests.Find(userId, groupId);
+        _db.GroupJoinRequests.Remove(joinRequst);
+        _db.SaveChanges();
+        
+        var referer = Request.Headers["Referer"].ToString();
+        if (!string.IsNullOrEmpty(referer))
+        {
+            return Redirect(referer);
+        }
+        
+        return Ok();
+    }
+    
+    [Authorize(Roles = "User,Admin")]
+    [HttpPost]
+    public IActionResult DenyRequest(string userId, int groupId)
+    {
+        var group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
+        if (group == null)
+            return NotFound();
+        
+        var joinRequst = _db.GroupJoinRequests.Find(userId, groupId);
+        _db.GroupJoinRequests.Remove(joinRequst);
         _db.SaveChanges();
         
         var referer = Request.Headers["Referer"].ToString();

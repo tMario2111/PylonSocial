@@ -1,31 +1,31 @@
-﻿<h3>Pending follow requests</h3>
+﻿<h3 class="mb-4">Group "@ViewBag.Group.Name" join requests:</h3>
 
-@foreach (var request in ViewBag.FollowRequests)
+@foreach (var request in ViewBag.GroupJoinRequests)
 {
-    <a asp-controller="Profiles" asp-action="Show" asp-route-id="@request.Sender.Profile.UserId" class="card mb-3 mx-auto" style="max-width: 600px; border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.09) 0 3px 12px; text-decoration: none; color: inherit;">
+    <a asp-controller="Profiles" asp-action="Show" asp-route-id="@request.User.Profile.UserId" class="card mb-3 mx-auto" style="max-width: 600px; border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.09) 0 3px 12px; text-decoration: none; color: inherit;">
         <div class="row g-0">
             <div class="col-md-4 d-flex justify-content-center align-items-center">
                 <img
-                    src="@(string.IsNullOrEmpty(request.Sender.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : request.Sender.Profile.ProfilePicture)"
+                    src="@(string.IsNullOrEmpty(request.User.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : request.Sender.Profile.ProfilePicture)"
                     alt="profile picture"
                     class="img-fluid rounded-circle"
                     style="width: 100px; height: 100px; object-fit: cover; padding: 10px;"/>
             </div>
             <div class="col-md-5 d-flex align-items-center">
                 <div class="card-body">
-                    <h5 class="card-title">@request.Sender.Profile.FirstName @request.Sender.Profile.LastName</h5>
+                    <h5 class="card-title">@request.User.Profile.FirstName @request.User.Profile.LastName</h5>
                 </div>
             </div>
             <div class="col-md-3 d-flex align-items-center justify-content-end">
                 <div class="d-flex flex-column align-items-center justify-content-center me-3">
-                    <form method="post" asp-controller="FollowRequests" asp-action="AcceptRequest"
-                          asp-route-senderId="@request.Sender.Id" class="mb-2">
+                    <form method="post" asp-controller="GroupJoinRequests" asp-action="AcceptRequest"
+                          asp-route-groupId="@ViewBag.Group.Id" asp-route-userId="@request.User.Id" class="mb-2">
                         <button type="submit" class="btn btn-sm btn-primary" style="white-space: nowrap; width: 125px">
                             Accept
                         </button>
                     </form>
-                    <form method="post" asp-controller="FollowRequests" asp-action="DenyRequest"
-                          asp-route-senderId="@request.Sender.Id">
+                    <form method="post" asp-controller="GroupJoinRequests" asp-action="DenyRequest"
+                          asp-route-groupId="@ViewBag.Group.Id" asp-route-userId="@request.User.Id">
                         <button class="btn btn-sm btn-danger" style="white-space: nowrap; width: 125px">Deny request</button>
                     </form>
                 </div>

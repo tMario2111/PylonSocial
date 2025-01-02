@@ -79,8 +79,13 @@ public class GroupsController : Controller
         ViewBag.IsMember = _db.UserGroups.Any(ug => ug.GroupId == group.Id && ug.UserId == userId);
         ViewBag.PendingRequest = _db.GroupJoinRequests.Any
             (gr => gr.GroupId == group.Id && gr.UserId == userId);
-        
-        
+
+        ViewBag.IsModerator = _db.Groups.Any(g => g.ModeratorId == userId && g.Id == group.Id);
+        if (ViewBag.IsModerator)
+        {
+            ViewBag.JoinRequestCount = _db.GroupJoinRequests.Count(gr => gr.GroupId == group.Id)
+                .ToString();
+        }
 
         return View();
     }
