@@ -1,0 +1,29 @@
+﻿<h3 class="mb-4">Manage "@ViewBag.Group.Name" members</h3>
+
+@foreach (var member in @ViewBag.Members)
+{
+    <a asp-controller="Profiles" asp-action="Show" asp-route-id="@member.User.Profile.UserId" class="card mb-3 mx-auto" style="max-width: 600px; border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.09) 0 3px 12px; text-decoration: none; color: inherit;">
+        <div class="row g-0">
+            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                <img
+                    src="@(string.IsNullOrEmpty(member.User.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : member.Sender.Profile.ProfilePicture)"
+                    alt="profile picture"
+                    class="img-fluid rounded-circle"
+                    style="width: 100px; height: 100px; object-fit: cover; padding: 10px;"/>
+            </div>
+            <div class="col-md-5 d-flex align-items-center">
+                <div class="card-body">
+                    <h5 class="card-title">@member.User.Profile.FirstName @member.User.Profile.LastName</h5>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-center justify-content-end">
+                <form asp-controller="Groups" asp-action="Kick" 
+                      asp-route-groupId="@ViewBag.Group.Id" asp-route-memberId="@member.User.Id">
+                    <button type="submit" class="btn btn-sm btn-danger me-3" style="white-space: nowrap; width: 125px">
+                        Kick
+                    </button>
+                </form>
+            </div>
+        </div>
+    </a>
+}

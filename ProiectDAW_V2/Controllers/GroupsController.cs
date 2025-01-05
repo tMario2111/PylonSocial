@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProiectDAW_V2.Data;
 using ProiectDAW_V2.Models;
 
@@ -88,5 +89,79 @@ public class GroupsController : Controller
         }
 
         return View();
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult Leave(int groupId)
+    {
+        var group = _db.Groups.Find(groupId);
+        if (group == null)
+            return NotFound();
+
+        var userId = _userManager.GetUserId(User)!;
+        var userGroup = _db.UserGroups.Find(userId, groupId);
+        if (userGroup == null)
+            return BadRequest();
+
+        _db.UserGroups.Remove(userGroup);
+        _db.SaveChanges();
+
+        var referer = Request.Headers["Referer"].ToString();
+        if (!string.IsNullOrEmpty(referer))
+        {
+            return Redirect(referer);
+        }
+
+        return Ok();
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult ManageMembers(int groupId)
+    {
+        var group = _db.Groups.Find(groupId);
+        if (group == null)
+            return NotFound();
+
+        var userId = _userManager.GetUserId(User)!;
+        if (group.ModeratorId != userId)
+            return Unauthorized();
+
+        ViewBag.Group = group;
+
+        ViewBag.Members = _db.UserGroups
+            .Include(gr => gr.User)
+            .Include(gr => gr.User.Profile)
+            .Where(gr => gr.GroupId == group.Id &&
+            gr.UserId != userId);
+
+        return View();
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    [HttpPost]
+    public IActionResult Kick(int groupId, string memberId)
+    {
+        var group = _db.Groups.Find(groupId);
+        if (group == null)
+            return NotFound();
+        
+        var userId = _userManager.GetUserId(User)!;
+        if (group.ModeratorId != userId)
+            return Unauthorized();
+        
+        var userGroup = _db.UserGroups.Find(memberId, groupId);
+        if (userGroup == null)
+            return NotFound();
+        
+        _db.UserGroups.Remove(userGroup);
+        _db.SaveChanges();
+        
+        var referer = Request.Headers["Referer"].ToString();
+        if (!string.IsNullOrEmpty(referer))
+        {
+            return Redirect(referer);
+        }
+        
+        return Ok();
     }
 }
