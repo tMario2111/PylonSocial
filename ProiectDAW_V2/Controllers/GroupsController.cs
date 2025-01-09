@@ -88,6 +88,8 @@ public class GroupsController : Controller
                 .ToString();
         }
 
+        ViewBag.IsAdmin = User.IsInRole("Admin");
+
         return View();
     }
 
@@ -163,5 +165,29 @@ public class GroupsController : Controller
         }
         
         return Ok();
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult Delete(int groupId)
+    {
+        var group = _db.Groups.Find(groupId);
+        if (group == null)
+            return NotFound();
+        
+        var userId = _userManager.GetUserId(User)!;
+        if (group.ModeratorId != userId && !User.IsInRole("Admin"))
+            return Unauthorized();
+        
+        _db.GroupJoinRequests.RemoveRange(_db.GroupJoinRequests.Where(gr => gr.GroupId == groupId));
+        _db.SaveChanges();
+        
+        _db.UserGroups.RemoveRange(_db.UserGroups.Where(gr => gr.GroupId == groupId));
+        _db.SaveChanges();
+        
+        _db.Groups.Remove(group);
+        _db.SaveChanges();
+            
+        return RedirectToAction("Index", "Groups");
     }
 }
