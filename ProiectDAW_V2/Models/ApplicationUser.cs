@@ -11,4 +11,5 @@ public class ApplicationUser : IdentityUser
     
     public virtual ICollection<FollowRequest>? RequestsSent { get; set; }
     public virtual ICollection<FollowRequest>? RequestsReceived { get; set; }
+    public virtual ICollection<Comment>? Comments { get; set; }
 }

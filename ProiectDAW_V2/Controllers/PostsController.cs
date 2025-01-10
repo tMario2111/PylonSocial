@@ -1,13 +1,8 @@
-﻿using System.Drawing.Printing;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ProiectDAW_V2.Data;
 using ProiectDAW_V2.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace ProiectDAW_V2.Controllers;
@@ -123,14 +118,19 @@ public class PostsController : Controller
 
     public ActionResult Show(int id)
     {
-        var post = db.Posts.Include(p => p.User).FirstOrDefault(p => p.Id == id);
+        var post = db.Posts
+            .Include(p => p.User)
+            .Include(p=>p.Comments)
+            //.ThenInclude(p=>p.Author)
+            .FirstOrDefault(p => p.Id == id);
         var userId = _userManager.GetUserId(User)!;
         var profile = db.Profiles.Include(p => p.User)
                 .Include(p => p.User.Followers)
                 .Include(p => p.User.Following)
                 .FirstOrDefault(x => x.UserId == userId);
-
+        
         ViewBag.Profile = profile!;
+        ViewBag.Comments = post.Comments;
         return View(post);
     }
 

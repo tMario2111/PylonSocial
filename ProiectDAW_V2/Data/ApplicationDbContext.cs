@@ -35,5 +35,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(fr => fr.SenderId).OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<FollowRequest>().HasOne(fr => fr.Receiver).WithMany(u => u.RequestsReceived)
             .HasForeignKey(fr => fr.ReceiverId);
+        
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.Author)
+            .WithMany(u => u.Comments)
+            .HasForeignKey(c => c.AuthorId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Comment>().HasOne(c => c.Post).WithMany(p => p.Comments)
+            .HasForeignKey(c => c.PostId).OnDelete(DeleteBehavior.NoAction);
     }
 }
