@@ -8,12 +8,14 @@ public class Comment
 
     [Required] public int PostId { get; set; }
 
-    [Required] public int AuthorId { get; set; }
+    [Required] public string AuthorId { get; set; }
 
     [Required]
     [MinLength(3)]
     [MaxLength(512)]
     public string Content { get; set; }
 
-    [Required] DateTime Date { get; set; }
+    [Required] public DateTime Date { get; set; }
+    
+    public virtual Post? Post { get; set; }
 }

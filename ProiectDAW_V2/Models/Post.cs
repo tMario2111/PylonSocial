@@ -6,10 +6,10 @@ public class Post
 {
     [Key] public int Id { get; set; }
 
-    [Required] public int UserId { get; set; }
+    [Required] public string UserId { get; set; }
 
-    [Required] public int GroupId { get; set; }
-
+    public virtual ApplicationUser? User { get; set; }
+    
     public enum PostType
     {
         Text,
@@ -24,4 +24,6 @@ public class Post
     [Required] public DateTime Date { get; set; }
     
     // TODO: Virtual members for foreign keys
+    public virtual ICollection<Comment> Comments { get; set; }
+
 }

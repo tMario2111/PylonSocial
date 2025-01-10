@@ -17,7 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Migrations\" />
       <Folder Include="wwwroot\assets\" />
+      <Folder Include="wwwroot\posts\" />
       <Folder Include="wwwroot\profile_pictures\" />
     </ItemGroup>
 
