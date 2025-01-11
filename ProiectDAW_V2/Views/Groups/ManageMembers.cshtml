@@ -6,7 +6,7 @@
         <div class="row g-0">
             <div class="col-md-4 d-flex justify-content-center align-items-center">
                 <img
-                    src="@(string.IsNullOrEmpty(member.User.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : member.Sender.Profile.ProfilePicture)"
+                    src="@(string.IsNullOrEmpty(member.User.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : member.User.Profile.ProfilePicture)"
                     alt="profile picture"
                     class="img-fluid rounded-circle"
                     style="width: 100px; height: 100px; object-fit: cover; padding: 10px;"/>

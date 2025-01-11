@@ -16,6 +16,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<Follower> Followers { get; set; }
     public DbSet<FollowRequest> FollowRequests { get; set; }
+    
+    public DbSet<Group> Groups { get; set; }
+
+    public DbSet<UserGroup> UserGroups { get; set; }
+
+    public DbSet<GroupJoinRequest> GroupJoinRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

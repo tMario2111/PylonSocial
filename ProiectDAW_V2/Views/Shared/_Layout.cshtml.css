@@ -1,6 +1,6 @@
 ﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
-* { font-family: Didot, "Didot LT STD", "Hoefler Text", Garamond, "Times New Roman", serif;}
+/** { font-family: Didot, "Didot LT STD", "Hoefler Text", Garamond, "Times New Roman", serif;}*/
 
 a.navbar-brand {
   white-space: normal;

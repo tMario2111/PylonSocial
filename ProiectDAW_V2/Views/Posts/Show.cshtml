@@ -3,14 +3,14 @@
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card" style="max-width: 800px; border-radius: 10px; overflow: hidden;">
         <div class="card-header bg-white d-flex align-items-center">
-            <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+            <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
             <div>
                 <h6 class="mb-0">@Model.User?.UserName</h6>
                 <small class="text-muted">@Model.Date.ToString("MMMM dd, yyyy @ HH:mm")</small>
             </div>
         </div>
-        
-        
+
+
         <div class="card-body p-0">
             @if (Model.Type == Post.PostType.Text)
             {
@@ -25,7 +25,7 @@
             else if (Model.Type == Post.PostType.Video)
             {
                 <div class="ratio ratio-16x9">
-                    <video src="@Url.Content(Model.Content)" controls = true style="max-height: 600px; object-fit: cover; width: 100%;"></video>
+                    <video src="@Url.Content(Model.Content)" controls=true style="max-height: 600px; object-fit: cover; width: 100%;"></video>
                 </div>
             }
         </div>
@@ -56,14 +56,16 @@
                     {
                         <li>
                             <p><strong>@comment.Author?.UserName</strong>: @comment.Content</p>
-                            <p><em>@comment.Date</em></p>
+                            <p>
+                                <em>@comment.Date</em>
+                            </p>
                         </li>
                     }
                 </ul>
             }
             else
             {
-                <p>Nu există comentarii pentru această postare.</p>
+                <p>There are no comments for this post</p>
             }
         </div>
     </div>
