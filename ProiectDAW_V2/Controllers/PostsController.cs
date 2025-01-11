@@ -14,7 +14,7 @@ public class PostsController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IWebHostEnvironment _env;
-    
+
     public PostsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager, IWebHostEnvironment env)
     {
@@ -23,23 +23,23 @@ public class PostsController : Controller
         _roleManager = roleManager;
         _env = env;
     }
-    
+
     public ActionResult New()
     {
         var post = new Post();
         return View(post);
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "User,Admin")]
     public ActionResult New(Post post)
-    { 
+    {
         TempData["SelectedPostType"] = post.Type;
         return RedirectToAction("SubmitPost");
     }
-    
-    
+
+
     public ActionResult SubmitPost()
     {
         if (TempData["SelectedPostType"] == null)
@@ -53,8 +53,8 @@ public class PostsController : Controller
 
         return View(post);
     }
-    
-    
+
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "User,Admin")]
@@ -64,10 +64,10 @@ public class PostsController : Controller
         post.Date = DateTime.Now;
         ViewBag.SelectedPostType = post.Type;
         Console.WriteLine(post.UserId);
-        
+
         if (content != null && content.Length > 0)
         {
-            var allowedExtensions = new [] {""};
+            var allowedExtensions = new[] { "" };
             if (post.Type == Post.PostType.Image)
             {
                 allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -76,7 +76,7 @@ public class PostsController : Controller
             {
                 allowedExtensions = new[] { ".mp4" };
             }
-                
+
             var fileExtension = Path.GetExtension(content.FileName).ToLower();
 
             if (!allowedExtensions.Contains(fileExtension))
@@ -84,7 +84,7 @@ public class PostsController : Controller
                 ModelState.AddModelError(string.Empty, "Invalid file extension");
                 return View(post);
             }
-            
+
             string uid = new string(Enumerable.Repeat("abcdefghijklmnopqrstuvwxyz0123456789", 32)
                 .Select(s => s[new Random().Next(s.Length)]).ToArray());
 
@@ -100,14 +100,14 @@ public class PostsController : Controller
             ModelState.Remove(nameof(post.Content));
             post.Content = databaseFileName;
         }
-        
-        if(ModelState.IsValid)
+
+        if (ModelState.IsValid)
         {
             db.Posts.Add(post);
             db.SaveChanges();
-            return RedirectToAction("Show", "Posts", new { id = post.Id }); 
+            return RedirectToAction("Show", "Posts", new { id = post.Id });
         }
-        
+
         foreach (var state in ModelState)
         {
             foreach (var error in state.Value.Errors)
@@ -115,24 +115,39 @@ public class PostsController : Controller
                 Console.WriteLine($"Key: {state.Key}, Error: {error.ErrorMessage}");
             }
         }
+
         return View(post);
     }
 
     public ActionResult Show(int id)
     {
+        if (db.Posts.Find(id) == null)
+            return NotFound();
+
         var post = db.Posts
-                 .Include(p => p.User)
-                 .Include(p=>p.Comments)
-                 .ThenInclude(c => c.Author)
-                 .ThenInclude(a => a.Profile)
-                 .FirstOrDefault(p => p.Id == id);
+            .Include(p => p.User)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.Author)
+            .ThenInclude(a => a.Profile)
+            .FirstOrDefault(p => p.Id == id);
         var userId = post.UserId;
         var profile = db.Profiles.Include(p => p.User)
-                .Include(p => p.User.Followers)
-                .Include(p => p.User.Following)
-                .FirstOrDefault(x => x.UserId == userId);
-        ViewBag.Profile = profile!; 
+            .Include(p => p.User.Followers)
+            .Include(p => p.User.Following)
+            .FirstOrDefault(x => x.UserId == userId);
+
+        if (profile.Visibility == Profile.VisibilityType.Private)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+            if (userId != _userManager.GetUserId(User) && !db.Followers.Any(f =>
+                    f.FollowerId == _userManager.GetUserId(User)
+                    && f.FollowedId == userId))
+                return Unauthorized();
+        }
+
+        ViewBag.Profile = profile!;
         ViewBag.Comments = post.Comments;
         return View(post);
     }
-} 
+}

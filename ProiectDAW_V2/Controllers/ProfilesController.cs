@@ -124,7 +124,7 @@ public class ProfilesController : Controller
             if (!User.Identity.IsAuthenticated)
                 return NotFound();
         }
-        
+
         var loggedInUserId = _userManager.GetUserId(User)!;
         var profile = (id == null)
             ? db.Profiles.Include(p => p.User)
@@ -141,7 +141,7 @@ public class ProfilesController : Controller
         ViewBag.Profile = profile!;
         ViewBag.CanEdit = isLoggedInUser;
         ViewBag.CanDelete = false;
-        
+
         if (!isLoggedInUser)
         {
             var follower = db.Followers.FirstOrDefault(f => f.FollowerId == loggedInUserId && f.FollowedId == id);
@@ -154,6 +154,15 @@ public class ProfilesController : Controller
         }
 
         ViewBag.UserId = loggedInUserId;
+
+        if (ViewBag.CanEdit || ViewBag.Followed || ViewBag.Profile.Visibility == Profile.VisibilityType.Public)
+        {
+            var userProfileId = (id == null) ? _userManager.GetUserId(User)! : id;
+            ViewBag.Posts = db.Posts
+                .Include(p => p.Comments)
+                .Where(p => p.UserId == userProfileId)
+                .OrderByDescending(p => p.Date);
+        }
 
         return View(profile);
     }
@@ -266,14 +275,14 @@ public class ProfilesController : Controller
         var userToBeDeleted = _userManager.FindByIdAsync(id).Result;
         if (userToBeDeleted == null)
             return NotFound();
-        
+
         // TODO: Sterge si postarile / comentariile
         db.Followers.RemoveRange(db.Followers.Where(f => f.FollowedId == id || f.FollowerId == id));
         db.FollowRequests.RemoveRange(db.FollowRequests.Where(fr => fr.SenderId == id || fr.ReceiverId == id));
         db.Profiles.RemoveRange(db.Profiles.Where(p => p.UserId == id));
         _userManager.DeleteAsync(userToBeDeleted).GetAwaiter().GetResult();
         db.SaveChanges();
-        
+
         return RedirectToAction("Index", "Home");
     }
 

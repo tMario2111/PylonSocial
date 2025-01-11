@@ -1,1 +1,46 @@
-﻿    
+﻿<a class="btn btn-primary" asp-controller="Posts" asp-action="New">Create new post</a>
+
+@if (ViewBag.IsAuthenticated)
+{
+    @foreach (var post in ViewBag.Posts)
+    {
+        <div class="container d-flex justify-content-center mt-3">
+            <div class="card" style="width: 60%; border-radius: 10px; overflow: hidden;">
+                <a asp-controller="Profiles" asp-action="Show" asp-route-id="@post.User.Profile.UserId" style="text-decoration: none; color: inherit;">
+                    <div class="card-header bg-white d-flex align-items-center">
+                        <img src="@(string.IsNullOrEmpty(post.User.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : post.User.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                        <div>
+                            <h6 class="mb-0">@post.User.Profile.FirstName @post.User.Profile.LastName</h6>
+                            <small class="text-muted">@post.Date.ToString("MMMM dd, yyyy @ HH:mm")</small>
+                        </div>
+                    </div>
+                </a>
+
+                <a asp-controller="Posts" asp-action="Show" asp-route-id="@post.Id"
+                   style="text-decoration: none; color: inherit;">
+                    <div class="card-body p-0">
+                        @if (post.Type == Post.PostType.Text)
+                        {
+                            <div class="p-3">
+                                <p class="mb-0" style="font-size: 16px;">@post.Content</p>
+                            </div>
+                        }
+                        else if (post.Type == Post.PostType.Image)
+                        {
+                            <img src="@post.Content" alt="Post Image" class="img-fluid" style="max-width: 100%; max-height: 600px; object-fit: cover; display: block; margin-left: auto; margin-right: auto;">
+                        }
+                        else if (post.Type == Post.PostType.Video)
+                        {
+                            <div class="ratio ratio-16x9">
+                                <video src="@Url.Content(post.Content)" controls=true style="max-height: 600px; object-fit: cover; width: 100%;"></video>
+                            </div>
+                        }
+                    </div>
+                    <div class="card-footer bg-white">
+                        <p>@post.Comments.Count comments</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
+}

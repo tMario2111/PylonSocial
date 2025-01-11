@@ -68,8 +68,53 @@
             </form>
         }
     </div>
+    <div class="mb-3"></div>
     @if (!ViewBag.CanEdit && !ViewBag.Followed && ViewBag.Profile.Visibility == Profile.VisibilityType.Private)
     {
         <h5>This is a private profile. Follow the user to be able to see their profile.</h5>
+    }
+    else
+    {
+        @foreach (var post in ViewBag.Posts)
+        {
+            <div class="container d-flex justify-content-center">
+                <div class="card" style="width: 60%; border-radius: 10px; overflow: hidden;">
+                    <a asp-controller="Profiles" asp-action="Show" asp-route-id="@ViewBag.Profile.UserId" style="text-decoration: none; color: inherit;">
+                        <div class="card-header bg-white d-flex align-items-center">
+                            <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                            <div>
+                                <h6 class="mb-0">@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h6>
+                                <small class="text-muted">@post.Date.ToString("MMMM dd, yyyy @ HH:mm")</small>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a asp-controller="Posts" asp-action="Show" asp-route-id="@post.Id"
+                       style="text-decoration: none; color: inherit;">
+                        <div class="card-body p-0">
+                            @if (post.Type == Post.PostType.Text)
+                            {
+                                <div class="p-3">
+                                    <p class="mb-0" style="font-size: 16px;">@post.Content</p>
+                                </div>
+                            }
+                            else if (post.Type == Post.PostType.Image)
+                            {
+                                <img src="@post.Content" alt="Post Image" class="img-fluid" style="max-width: 100%; max-height: 600px; object-fit: cover; display: block; margin-left: auto; margin-right: auto;">
+                            }
+                            else if (post.Type == Post.PostType.Video)
+                            {
+                                <div class="ratio ratio-16x9">
+                                    <video src="@Url.Content(post.Content)" controls=true style="max-height: 600px; object-fit: cover; width: 100%;"></video>
+                                </div>
+                            }
+                        </div>
+                    </a>
+                    <div class="card-footer bg-white">
+                        <p>@post.Comments.Count comments</p>
+                    </div>
+                </div>
+            </div>
+        }
     }
 </div>
