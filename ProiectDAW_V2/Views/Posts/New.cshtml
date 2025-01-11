@@ -1,0 +1,24 @@
+﻿@model ProiectDAW_V2.Models.Post
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <h2 class="text-center mt-5">Create New Post</h2>
+    <hr />
+    <form enctype="multipart/form-data" method="post" asp-action="New" asp-controller="Posts">
+        <div class="form-group mb-3">
+            <label asp-for="Type">Post Type</label>
+
+            <select asp-for="Type" class="form-control">
+                @foreach (var i in Enum.GetValues(typeof(Post.PostType)))
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+
+        <br/>
+        <button type="submit" class="btn btn-lg btn-primary" style="width: 200px">Next</button>
+        <br/>
+        <br/>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary" style="width: 100%">Cancel</a>
+    </form>
+</div>

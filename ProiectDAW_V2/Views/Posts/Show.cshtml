@@ -1,0 +1,70 @@
+﻿@model ProiectDAW_V2.Models.Post
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card" style="max-width: 800px; border-radius: 10px; overflow: hidden;">
+        <div class="card-header bg-white d-flex align-items-center">
+            <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+            <div>
+                <h6 class="mb-0">@Model.User?.UserName</h6>
+                <small class="text-muted">@Model.Date.ToString("MMMM dd, yyyy @ HH:mm")</small>
+            </div>
+        </div>
+        
+        
+        <div class="card-body p-0">
+            @if (Model.Type == Post.PostType.Text)
+            {
+                <div class="p-3">
+                    <p class="mb-0" style="font-size: 16px;">@Model.Content</p>
+                </div>
+            }
+            else if (Model.Type == Post.PostType.Image)
+            {
+                <img src="@Model.Content" alt="Post Image" class="img-fluid" style="max-height: 600px; object-fit: cover; width: 100%;">
+            }
+            else if (Model.Type == Post.PostType.Video)
+            {
+                <div class="ratio ratio-16x9">
+                    <video src="@Url.Content(Model.Content)" controls = true style="max-height: 600px; object-fit: cover; width: 100%;"></video>
+                </div>
+            }
+        </div>
+
+        <!-- Footer cu acțiuni -->
+        <div class="card-footer bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-light">
+                        <a href="@Url.Action("New", "Comments", new { postId = Model.Id })" class="text-decoration-none">
+                            <i class="bi bi-chat"></i> Comment
+                        </a>
+                    </button>
+                    <button class="btn btn-light">
+                        <i class="bi bi-share"></i> Share
+                    </button>
+                </div>
+            </div>
+            <br/>
+
+
+            <p>Comments:</p>
+
+            @if (ViewBag.Comments != null && ((ICollection<Comment>)ViewBag.Comments).Any())
+            {
+                <ul>
+                    @foreach (var comment in (ICollection<Comment>)ViewBag.Comments)
+                    {
+                        <li>
+                            <p><strong>@comment.Author?.UserName</strong>: @comment.Content</p>
+                            <p><em>@comment.Date</em></p>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Nu există comentarii pentru această postare.</p>
+            }
+        </div>
+    </div>
+</div>

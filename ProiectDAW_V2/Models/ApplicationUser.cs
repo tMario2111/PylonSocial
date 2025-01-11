@@ -15,4 +15,6 @@ public class ApplicationUser : IdentityUser
     public virtual ICollection<UserGroup>? UserGroups { get; set; }
     
     public virtual ICollection<GroupJoinRequest>? GroupJoinRequests { get; set; }
+    
+    public virtual ICollection<Comment>? Comments { get; set; }
 }
