@@ -274,9 +274,21 @@ public class ProfilesController : Controller
         if (userToBeDeleted == null)
             return NotFound();
 
-        // TODO: Sterge si postarile / comentariile
+        // TODO: Logica pentru grupuri!
         db.Followers.RemoveRange(db.Followers.Where(f => f.FollowedId == id || f.FollowerId == id));
         db.FollowRequests.RemoveRange(db.FollowRequests.Where(fr => fr.SenderId == id || fr.ReceiverId == id));
+
+        var posts = db.Posts.Where(p => p.UserId == userToBeDeleted.Id).ToList();
+        foreach (var post in posts)
+        {
+            var comments = db.Comments.Where(c => c.PostId == post.Id);
+            db.Comments.RemoveRange(comments);
+            db.SaveChanges();
+        }
+        
+        db.Posts.RemoveRange(posts);
+        db.SaveChanges();
+        
         db.Profiles.RemoveRange(db.Profiles.Where(p => p.UserId == id));
         _userManager.DeleteAsync(userToBeDeleted).GetAwaiter().GetResult();
         db.SaveChanges();

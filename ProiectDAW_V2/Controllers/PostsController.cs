@@ -145,14 +145,38 @@ public class PostsController : Controller
                     && f.FollowedId == userId))
                 return Unauthorized();
         }
-        
+
         ViewBag.IsLoggedIn = User.Identity.IsAuthenticated;
         if (ViewBag.IsLoggedIn)
             ViewBag.LoggedInUserId = _userManager.GetUserId(User)!;
         ViewBag.IsAdmin = User.IsInRole("Admin");
 
         ViewBag.Profile = profile!;
-        ViewBag.Comments = post.Comments;;
+        ViewBag.Comments = post.Comments;
+        ;
         return View(post);
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+        var post = db.Posts
+            .Include(p => p.Comments)
+            .FirstOrDefault(p => p.Id == id);
+        if (post == null)
+            return NotFound();
+        
+        if (post.UserId != _userManager.GetUserId(User) && !User.IsInRole("Admin"))
+            return Unauthorized();
+
+        foreach (var comment in post.Comments)
+            db.Comments.Remove(comment);
+        db.SaveChanges();
+        
+        db.Posts.Remove(post);
+        db.SaveChanges();
+
+        return RedirectToAction("Index", "Home");
     }
 }

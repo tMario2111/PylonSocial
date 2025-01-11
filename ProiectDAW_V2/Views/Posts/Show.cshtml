@@ -3,15 +3,22 @@
 
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card" style="width: 60%; border-radius: 10px; overflow: hidden;">
-        <a asp-controller="Profiles" asp-action="Show" asp-route-id="@Model.User?.Id" style="text-decoration: none; color: inherit;">
-            <div class="card-header bg-white d-flex align-items-center">
-                <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+        <div class="card-header bg-white d-flex align-items-center">
+            <img src="@(string.IsNullOrEmpty(ViewBag.Profile.ProfilePicture) ? "/assets/fallback_profile_picture.png" : ViewBag.Profile.ProfilePicture)" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+            <a asp-controller="Profiles" asp-action="Show" asp-route-id="@Model.User?.Id" style="text-decoration: none; color: inherit;">
                 <div>
                     <h6 class="mb-0">@ViewBag.Profile.FirstName @ViewBag.Profile.LastName</h6>
                     <small class="text-muted">@Model.Date.ToString("MMMM dd, yyyy @ HH:mm")</small>
                 </div>
-            </div>
-        </a>
+            </a>
+            @if (ViewBag.IsLoggedIn && (ViewBag.LoggedInUserId == @Model.User?.Id || ViewBag.IsAdmin))
+            {
+                <form method="post" asp-controller="Posts" asp-action="Delete" asp-route-id="@Model.Id"
+                      class="ms-auto">
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            }
+        </div>
 
         <div class="card-body p-0">
             @if (Model.Type == Post.PostType.Text)
@@ -82,6 +89,7 @@
                             }
                         </div>
                     }
+
                     <hr/>
                 }
             }
