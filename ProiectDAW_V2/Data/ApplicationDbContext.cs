@@ -16,7 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<Follower> Followers { get; set; }
     public DbSet<FollowRequest> FollowRequests { get; set; }
-    
+
     public DbSet<Group> Groups { get; set; }
 
     public DbSet<UserGroup> UserGroups { get; set; }
@@ -41,7 +41,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(fr => fr.SenderId).OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<FollowRequest>().HasOne(fr => fr.Receiver).WithMany(u => u.RequestsReceived)
             .HasForeignKey(fr => fr.ReceiverId);
-        
+
         modelBuilder.Entity<UserGroup>().HasKey(ug => new { ug.UserId, ug.GroupId });
         modelBuilder.Entity<UserGroup>().HasOne(ug => ug.User).WithMany(u => u.UserGroups)
             .HasForeignKey(ug => ug.UserId);
@@ -53,7 +53,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(x => x.GroupJoinRequests).HasForeignKey(x => x.UserId);
         modelBuilder.Entity<GroupJoinRequest>().HasOne(x => x.Group)
             .WithMany(x => x.GroupJoinRequests).HasForeignKey(x => x.GroupId);
-        
+
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.Author)
             .WithMany(u => u.Comments)
@@ -62,5 +62,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Comment>().HasOne(c => c.Post).WithMany(p => p.Comments)
             .HasForeignKey(c => c.PostId).OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Post>().HasOne(p => p.Group).WithMany(g => g.Posts).HasForeignKey(p => p.GroupId);
     }
 }

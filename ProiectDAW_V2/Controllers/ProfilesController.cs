@@ -179,8 +179,6 @@ public class ProfilesController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(Profile requestProfile, IFormFile? profilePicture)
     {
-        // TODO: Nu prea inteleg cum dau valoarea checkbox-ului in edit
-
         Profile profile = db.Profiles.FirstOrDefault(x => x.UserId == _userManager.GetUserId(User)!);
 
         if (string.IsNullOrEmpty(requestProfile.FirstName) || requestProfile.FirstName.Length < 3 ||

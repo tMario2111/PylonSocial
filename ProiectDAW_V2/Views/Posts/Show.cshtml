@@ -1,4 +1,5 @@
-﻿@model ProiectDAW_V2.Models.Post
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model ProiectDAW_V2.Models.Post
 
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card" style="width: 60%; border-radius: 10px; overflow: hidden;">
@@ -63,6 +64,24 @@
                         <span style="float: right;">@comment.Date</span>
                     </p>
                     <p style="margin-top: 5px;">@comment.Content</p>
+
+                    @if (ViewBag.IsLoggedIn)
+                    {
+                        <div class="d-flex">
+                            @if (ViewBag.LoggedInUserId == @comment.AuthorId)
+                            {
+                                <a class="btn btn-sm btn-secondary me-2" asp-controller="Comments" asp-action="Edit" asp-route-id="@comment.Id">
+                                    Edit
+                                </a>
+                            }
+                            @if (ViewBag.IsAdmin || ViewBag.LoggedInUserId == @comment.AuthorId)
+                            {
+                                <form method="post" asp-controller="Comments" asp-action="Delete" asp-route-id="@comment.Id">
+                                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                                </form>
+                            }
+                        </div>
+                    }
                     <hr/>
                 }
             }

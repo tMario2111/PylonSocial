@@ -24,7 +24,9 @@ public class Post
 
     [Required] public DateTime Date { get; set; }
     
-    // TODO: Virtual members for foreign keys
     public virtual ICollection<Comment>? Comments { get; set; }
+
+    public int? GroupId;
+    public virtual Group? Group { get; set; }
 
 }

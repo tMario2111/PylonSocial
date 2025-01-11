@@ -126,7 +126,7 @@ public class PostsController : Controller
 
         var post = db.Posts
             .Include(p => p.User)
-            .Include(p => p.Comments)
+            .Include(p => p.Comments.OrderByDescending(c => c.Date))
             .ThenInclude(c => c.Author)
             .ThenInclude(a => a.Profile)
             .FirstOrDefault(p => p.Id == id);
@@ -145,9 +145,14 @@ public class PostsController : Controller
                     && f.FollowedId == userId))
                 return Unauthorized();
         }
+        
+        ViewBag.IsLoggedIn = User.Identity.IsAuthenticated;
+        if (ViewBag.IsLoggedIn)
+            ViewBag.LoggedInUserId = _userManager.GetUserId(User)!;
+        ViewBag.IsAdmin = User.IsInRole("Admin");
 
         ViewBag.Profile = profile!;
-        ViewBag.Comments = post.Comments;
+        ViewBag.Comments = post.Comments;;
         return View(post);
     }
 }

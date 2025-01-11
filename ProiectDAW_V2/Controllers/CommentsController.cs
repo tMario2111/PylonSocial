@@ -12,7 +12,7 @@ public class CommentsController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IWebHostEnvironment _env;
-    
+
     public CommentsController(ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
@@ -31,7 +31,7 @@ public class CommentsController : Controller
         comment.PostId = postId;
         return View(comment);
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "User,Admin")]
@@ -44,10 +44,10 @@ public class CommentsController : Controller
         {
             db.Add(comment);
             db.SaveChanges();
-            
+
             return RedirectToAction("Show", "Posts", new { id = comment.PostId });
         }
-        
+
         foreach (var state in ModelState)
         {
             foreach (var error in state.Value.Errors)
@@ -55,6 +55,60 @@ public class CommentsController : Controller
                 Console.WriteLine($"Key: {state.Key}, Error: {error.ErrorMessage}");
             }
         }
+
         return View(comment);
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    public IActionResult Edit(int id)
+    {
+        var comment = db.Comments.Find(id);
+        if (comment == null)
+            return NotFound();
+        if (comment.AuthorId != _userManager.GetUserId(User))
+            return Unauthorized();
+
+        return View(comment);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(int id, Comment requestComment)
+    {
+        var comment = db.Comments.Find(id);
+
+        if (ModelState.IsValid)
+        {
+            comment.Date = DateTime.Now;
+            comment.Content = requestComment.Content;
+            db.SaveChanges();
+
+            return RedirectToAction("Show", "Posts", new { id = requestComment.PostId });
+        }
+
+        return View(requestComment);
+    }
+
+    [Authorize(Roles = "User,Admin")]
+    [HttpPost]
+    public IActionResult Delete(int id)
+    {
+        var comment = db.Comments.Find(id);
+        if (comment == null)
+            return NotFound();
+
+        if (comment.AuthorId != _userManager.GetUserId(User)
+            && !User.IsInRole("Admin"))
+            return Unauthorized();
+        
+        db.Remove(comment);
+        db.SaveChanges();
+
+        var referer = Request.Headers["Referer"].ToString();
+        if (!string.IsNullOrEmpty(referer))
+        {
+            return Redirect(referer);
+        }
+
+        return Ok();
     }
 }
