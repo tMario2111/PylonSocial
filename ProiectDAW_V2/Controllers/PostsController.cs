@@ -124,6 +124,7 @@ public class PostsController : Controller
                  .Include(p => p.User)
                  .Include(p=>p.Comments)
                  .ThenInclude(c => c.Author)
+                 .ThenInclude(a => a.Profile)
                  .FirstOrDefault(p => p.Id == id);
         var userId = post.UserId;
         var profile = db.Profiles.Include(p => p.User)
