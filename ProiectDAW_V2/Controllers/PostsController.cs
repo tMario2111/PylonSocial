@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProiectDAW_V2.Data;
@@ -31,6 +32,7 @@ public class PostsController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "User,Admin")]
     public ActionResult New(Post post)
     { 
         TempData["SelectedPostType"] = post.Type;
@@ -55,15 +57,17 @@ public class PostsController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "User,Admin")]
     public async Task<IActionResult> SubmitPost(Post post, IFormFile? content)
     {
         post.UserId = _userManager.GetUserId(User);
         post.Date = DateTime.Now;
         ViewBag.SelectedPostType = post.Type;
+        Console.WriteLine(post.UserId);
         
         if (content != null && content.Length > 0)
         {
-            var allowedExtensions = new [] {"dad"};
+            var allowedExtensions = new [] {""};
             if (post.Type == Post.PostType.Image)
             {
                 allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -97,12 +101,11 @@ public class PostsController : Controller
             post.Content = databaseFileName;
         }
         
-        //if(ModelState.IsValid)
+        if(ModelState.IsValid)
         {
             db.Posts.Add(post);
             db.SaveChanges();
-
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Show", "Posts", new { id = post.Id }); 
         }
         
         foreach (var state in ModelState)
@@ -112,26 +115,22 @@ public class PostsController : Controller
                 Console.WriteLine($"Key: {state.Key}, Error: {error.ErrorMessage}");
             }
         }
-        
         return View(post);
     }
 
     public ActionResult Show(int id)
     {
         var post = db.Posts
-            .Include(p => p.User)
-            .Include(p=>p.Comments)
-            //.ThenInclude(p=>p.Author)
-            .FirstOrDefault(p => p.Id == id);
-        var userId = _userManager.GetUserId(User)!;
+                 .Include(p => p.User)
+                 .Include(p=>p.Comments)
+                 .FirstOrDefault(p => p.Id == id);
+        var userId = post.UserId;
         var profile = db.Profiles.Include(p => p.User)
                 .Include(p => p.User.Followers)
                 .Include(p => p.User.Following)
                 .FirstOrDefault(x => x.UserId == userId);
-        
-        ViewBag.Profile = profile!;
+        ViewBag.Profile = profile!; 
         ViewBag.Comments = post.Comments;
         return View(post);
     }
-
-}
+} 

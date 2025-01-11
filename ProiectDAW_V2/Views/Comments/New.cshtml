@@ -1,0 +1,19 @@
+﻿@model ProiectDAW_V2.Models.Comment
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <h2 class="text-center mt-5">Write a comment</h2>
+    <hr />
+    <form method="post" asp-action="New" asp-controller="Comments">
+        <input type="hidden" asp-for="PostId" />
+        <div class="form-group mb-3">
+            <textarea asp-for="Content" class="form-control" rows="4" cols="50"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <br/>
+        <button type="submit" class="btn btn-lg btn-primary" style="width: 100%">Post</button>
+        <br/>
+        <br/>
+        <a href="@Url.Action("Show", "Posts", new { id = Model.PostId })" class="btn btn-secondary" style="width: 100%">Cancel</a>
+    </form>
+</div>

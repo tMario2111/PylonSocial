@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProiectDAW_V2.Data;
 using ProiectDAW_V2.Models;
@@ -9,13 +10,21 @@ public class CommentsController : Controller
 {
     private readonly ApplicationDbContext db;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IWebHostEnvironment _env;
     
-    public CommentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public CommentsController(ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IWebHostEnvironment env)
     {
         db = context;
         _userManager = userManager;
+        _roleManager = roleManager;
+        _env = env;
     }
 
+    [Authorize(Roles = "User,Admin")]
     public ActionResult New(int postId)
     {
         var comment = new Comment();
@@ -25,6 +34,7 @@ public class CommentsController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "User,Admin")]
     public ActionResult New(Comment comment)
     {
         comment.AuthorId = _userManager.GetUserId(User);

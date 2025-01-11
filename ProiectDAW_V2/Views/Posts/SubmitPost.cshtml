@@ -1,0 +1,34 @@
+﻿@model ProiectDAW_V2.Models.Post
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <label asp-for="Content">
+        <h2 class="text-center mt-5">Post a @ViewBag.SelectedPostType</h2>
+    </label>
+
+    <form enctype="multipart/form-data" method="post" asp-action="SubmitPost" asp-controller="Posts">
+        <br/>
+        @if ((Post.PostType)ViewBag.SelectedPostType == Post.PostType.Image)
+        {
+            <input asp-for="Content" class="form-control" type="file" />
+            <span asp-validation-for="Content" class="text-danger"></span>
+        }
+        else if ((Post.PostType)ViewBag.SelectedPostType == Post.PostType.Text)
+        {
+            <textarea asp-for="Content" class="form-control" rows="4" cols="50">Write your thoughts</textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        }
+        else if ((Post.PostType)ViewBag.SelectedPostType == Post.PostType.Video)
+        {
+            <input asp-for="Content" class="form-control" type="file" />
+            <span asp-validation-for="Content" class="text-danger"></span>
+        }
+
+        <br/>
+        <br/>
+        <input type="hidden" asp-for="Type" value="@ViewBag.SelectedPostType" />
+        <button type="submit" class="btn btn-lg btn-primary" style="width: 100%">Post</button>
+        <br/>
+        <br/>
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary" style="width: 100%">Cancel</a>
+    </form>
+</div>
