@@ -193,6 +193,17 @@ public class GroupsController : Controller
         _db.UserGroups.RemoveRange(_db.UserGroups.Where(gr => gr.GroupId == groupId));
         _db.SaveChanges();
 
+        var posts = _db.Posts.Where(p => p.GroupId != null && p.GroupId == group.Id).ToList();
+        foreach (var post in posts)
+        {
+            var comments = _db.Comments.Where(c => c.PostId == post.Id);
+            _db.Comments.RemoveRange(comments);
+            _db.SaveChanges();
+        }
+        
+        _db.Posts.RemoveRange(posts);
+        _db.SaveChanges();
+
         _db.Groups.Remove(group);
         _db.SaveChanges();
 

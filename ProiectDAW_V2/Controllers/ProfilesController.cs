@@ -288,6 +288,29 @@ public class ProfilesController : Controller
         
         db.Posts.RemoveRange(posts);
         db.SaveChanges();
+
+        var groups = db.Groups.Where(g => g.ModeratorId == id).ToList();
+        foreach (var group in groups)
+        {
+            var groupPosts = db.Posts.Where(p => p.GroupId != null && p.GroupId == group.Id).ToList();
+            foreach (var post in groupPosts)
+            {
+                var comments = db.Comments.Where(c => c.PostId == post.Id);
+                db.Comments.RemoveRange(comments);
+                db.SaveChanges();
+            }
+            
+            db.Posts.RemoveRange(groupPosts);
+            db.SaveChanges();
+            
+            db.GroupJoinRequests.RemoveRange(db.GroupJoinRequests.Where(gr => gr.GroupId == group.Id));
+            db.SaveChanges();
+
+            db.UserGroups.RemoveRange(db.UserGroups.Where(gr => gr.GroupId == group.Id));
+            db.SaveChanges();
+        }
+        db.Groups.RemoveRange(groups);
+        db.SaveChanges();
         
         db.Profiles.RemoveRange(db.Profiles.Where(p => p.UserId == id));
         _userManager.DeleteAsync(userToBeDeleted).GetAwaiter().GetResult();
