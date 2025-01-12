@@ -36,11 +36,22 @@ public class HomeController : Controller
             .Select(f => f.FollowedId)
             .ToList();
 
+        var joinedGroups = _db.UserGroups
+            .Where(ug => ug.UserId == userId)
+            .Select(ug => ug.GroupId)
+            .ToList();
+
+        foreach (var group in joinedGroups)
+            Console.WriteLine(group);
+
         ViewBag.Posts = _db.Posts
             .Include(p => p.Comments)
             .Include(p => p.User)
             .ThenInclude(u => u.Profile)
-            .Where(p => followedIds.Any(id => id == p.UserId) && p.GroupId == null)
+            .Include(p => p.Group)
+            .Where(p => (p.GroupId == null && followedIds.Any(id => id == p.UserId))
+                        || (p.GroupId != null && joinedGroups.Any(id => id == p.GroupId)
+                                              && p.UserId != userId))
             .OrderByDescending(p => p.Date)
             .ToList();
 
