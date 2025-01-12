@@ -150,19 +150,21 @@ public class PostsController : Controller
             .Include(p => p.Comments.OrderByDescending(c => c.Date))
             .ThenInclude(c => c.Author)
             .ThenInclude(a => a.Profile)
+            .Include(p => p.Group)
             .FirstOrDefault(p => p.Id == id);
         var userId = post.UserId;
         var profile = db.Profiles.Include(p => p.User)
             .Include(p => p.User.Followers)
             .Include(p => p.User.Following)
             .FirstOrDefault(x => x.UserId == userId);
-
+        
         if (post.GroupId != null)
         {
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
             if (!db.UserGroups.Any(g => g.UserId == _userManager.GetUserId(User) && g.GroupId == post.GroupId))
                 return Unauthorized();
+            ViewBag.IsModerator = post.Group.ModeratorId == _userManager.GetUserId(User);
         }
         else if (profile.Visibility == Profile.VisibilityType.Private)
         {
@@ -181,7 +183,7 @@ public class PostsController : Controller
 
         ViewBag.Profile = profile!;
         ViewBag.Comments = post.Comments;
-        ;
+        
         return View(post);
     }
 
@@ -191,11 +193,13 @@ public class PostsController : Controller
     {
         var post = db.Posts
             .Include(p => p.Comments)
+            .Include(p => p.Group)
             .FirstOrDefault(p => p.Id == id);
         if (post == null)
             return NotFound();
 
-        if (post.UserId != _userManager.GetUserId(User) && !User.IsInRole("Admin"))
+        if (post.UserId != _userManager.GetUserId(User) && !User.IsInRole("Admin")
+            && !(post.GroupId != null && post.Group.ModeratorId == _userManager.GetUserId(User)))
             return Unauthorized();
 
         foreach (var comment in post.Comments)

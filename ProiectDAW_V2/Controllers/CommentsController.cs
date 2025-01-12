@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProiectDAW_V2.Data;
 using ProiectDAW_V2.Models;
 
@@ -92,14 +93,18 @@ public class CommentsController : Controller
     [HttpPost]
     public IActionResult Delete(int id)
     {
-        var comment = db.Comments.Find(id);
+        var comment = db.Comments
+            .Include(c => c.Post)
+            .ThenInclude(p => p.Group)
+            .FirstOrDefault(c => c.Id == id);
         if (comment == null)
             return NotFound();
 
         if (comment.AuthorId != _userManager.GetUserId(User)
-            && !User.IsInRole("Admin"))
+            && !User.IsInRole("Admin")
+            && !(comment.Post.GroupId != null && comment.Post.Group.ModeratorId == _userManager.GetUserId(User)))
             return Unauthorized();
-        
+
         db.Remove(comment);
         db.SaveChanges();
 
