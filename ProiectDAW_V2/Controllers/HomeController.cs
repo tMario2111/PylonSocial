@@ -40,7 +40,7 @@ public class HomeController : Controller
             .Include(p => p.Comments)
             .Include(p => p.User)
             .ThenInclude(u => u.Profile)
-            .Where(p => followedIds.Any(id => id == p.UserId))
+            .Where(p => followedIds.Any(id => id == p.UserId) && p.GroupId == null)
             .OrderByDescending(p => p.Date)
             .ToList();
 

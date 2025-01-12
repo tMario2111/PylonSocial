@@ -90,6 +90,14 @@ public class GroupsController : Controller
 
         ViewBag.IsAdmin = User.IsInRole("Admin");
 
+        ViewBag.Posts = _db.Posts
+            .Include(p => p.Comments)
+            .Include(p => p.User)
+            .ThenInclude(u => u.Profile)
+            .Where(p => p.GroupId == group.Id)
+            .OrderByDescending(p => p.Date)
+            .ToList();
+
         return View();
     }
 
@@ -134,7 +142,7 @@ public class GroupsController : Controller
             .Include(gr => gr.User)
             .Include(gr => gr.User.Profile)
             .Where(gr => gr.GroupId == group.Id &&
-            gr.UserId != userId);
+                         gr.UserId != userId);
 
         return View();
     }
@@ -146,24 +154,24 @@ public class GroupsController : Controller
         var group = _db.Groups.Find(groupId);
         if (group == null)
             return NotFound();
-        
+
         var userId = _userManager.GetUserId(User)!;
         if (group.ModeratorId != userId)
             return Unauthorized();
-        
+
         var userGroup = _db.UserGroups.Find(memberId, groupId);
         if (userGroup == null)
             return NotFound();
-        
+
         _db.UserGroups.Remove(userGroup);
         _db.SaveChanges();
-        
+
         var referer = Request.Headers["Referer"].ToString();
         if (!string.IsNullOrEmpty(referer))
         {
             return Redirect(referer);
         }
-        
+
         return Ok();
     }
 
@@ -174,20 +182,20 @@ public class GroupsController : Controller
         var group = _db.Groups.Find(groupId);
         if (group == null)
             return NotFound();
-        
+
         var userId = _userManager.GetUserId(User)!;
         if (group.ModeratorId != userId && !User.IsInRole("Admin"))
             return Unauthorized();
-        
+
         _db.GroupJoinRequests.RemoveRange(_db.GroupJoinRequests.Where(gr => gr.GroupId == groupId));
         _db.SaveChanges();
-        
+
         _db.UserGroups.RemoveRange(_db.UserGroups.Where(gr => gr.GroupId == groupId));
         _db.SaveChanges();
-        
+
         _db.Groups.Remove(group);
         _db.SaveChanges();
-            
+
         return RedirectToAction("Index", "Groups");
     }
 }

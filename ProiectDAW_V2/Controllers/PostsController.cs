@@ -24,21 +24,25 @@ public class PostsController : Controller
         _env = env;
     }
 
-    public ActionResult New()
+    public ActionResult New(int? groupId = null)
     {
         var post = new Post();
+        ViewBag.GroupId = groupId;
+        if (TempData["GroupId"] != null)
+            TempData.Remove("GroupId");
         return View(post);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "User,Admin")]
-    public ActionResult New(Post post)
+    public ActionResult New(Post post, int? groupId = null)
     {
         TempData["SelectedPostType"] = post.Type;
+        if (groupId != null)
+            TempData["GroupId"] = groupId;
         return RedirectToAction("SubmitPost");
     }
-
 
     public ActionResult SubmitPost()
     {
@@ -48,18 +52,29 @@ public class PostsController : Controller
         var postType = (Post.PostType)TempData["SelectedPostType"];
         TempData.Keep("SelectedPostType");
 
+        if (TempData["GroupId"] != null)
+            TempData.Keep("GroupId");
+
         var post = new Post { Type = postType };
         ViewBag.SelectedPostType = postType;
 
         return View(post);
     }
 
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "User,Admin")]
     public async Task<IActionResult> SubmitPost(Post post, IFormFile? content)
     {
+        if (TempData["GroupId"] != null)
+        {
+            if (!db.UserGroups.Any(g => g.UserId == _userManager.GetUserId(User)
+                                        && g.GroupId == (int)TempData["GroupId"]!))
+            {
+                return Unauthorized();
+            }
+        }
+
         post.UserId = _userManager.GetUserId(User);
         post.Date = DateTime.Now;
         ViewBag.SelectedPostType = post.Type;
@@ -103,6 +118,12 @@ public class PostsController : Controller
 
         if (ModelState.IsValid)
         {
+            if (TempData["GroupId"] != null)
+            {
+                post.GroupId = (int)TempData["GroupId"]!;
+                TempData.Remove("GroupId");
+            }
+
             db.Posts.Add(post);
             db.SaveChanges();
             return RedirectToAction("Show", "Posts", new { id = post.Id });
@@ -136,7 +157,14 @@ public class PostsController : Controller
             .Include(p => p.User.Following)
             .FirstOrDefault(x => x.UserId == userId);
 
-        if (profile.Visibility == Profile.VisibilityType.Private)
+        if (post.GroupId != null)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+            if (!db.UserGroups.Any(g => g.UserId == _userManager.GetUserId(User) && g.GroupId == post.GroupId))
+                return Unauthorized();
+        }
+        else if (profile.Visibility == Profile.VisibilityType.Private)
         {
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
@@ -166,14 +194,14 @@ public class PostsController : Controller
             .FirstOrDefault(p => p.Id == id);
         if (post == null)
             return NotFound();
-        
+
         if (post.UserId != _userManager.GetUserId(User) && !User.IsInRole("Admin"))
             return Unauthorized();
 
         foreach (var comment in post.Comments)
             db.Comments.Remove(comment);
         db.SaveChanges();
-        
+
         db.Posts.Remove(post);
         db.SaveChanges();
 

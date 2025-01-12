@@ -160,7 +160,7 @@ public class ProfilesController : Controller
             var userProfileId = (id == null) ? _userManager.GetUserId(User)! : id;
             ViewBag.Posts = db.Posts
                 .Include(p => p.Comments)
-                .Where(p => p.UserId == userProfileId)
+                .Where(p => p.UserId == userProfileId && p.GroupId == null)
                 .OrderByDescending(p => p.Date);
         }
 
